@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -53,6 +56,9 @@ val infoFieldsData = listOf(
     InfoFieldData("Kod biletu", "33A52GQ9")
 )
 
+    // сделать бранч
+    // сделать первоначальный экран
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,47 +68,37 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    Box(
-                        modifier = Modifier.background(
-                            color = Color.White
-                        ),
+                    Column(
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         Column(
                             modifier = Modifier
-                                .wrapContentHeight(),
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .background(
-                                        color = Color(0xFF282542)
-                                    )
-                                    .padding(12.dp)
-                            ) {
-                                Title("Ticket control")
-                                TicketType(
-                                    "NORMALNY", "20", "minut", "I+II+III"
+                                .background(
+                                    color = Color(0xFF282542)
+//                                    color = MaterialTheme.colorScheme.violet
                                 )
+                                .padding(12.dp)
+                        ) {
+                            Title("Ticket control")
+                            TicketType(
+                                "NORMALNY", "20", "minut", "I+II+III"
+                            )
+                        }
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp, 12.dp, 12.dp, 12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            item { Spacer(modifier = Modifier.height(12.dp)) }
+                            item {
+                                QrCode(false, "gfd")
                             }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 36.dp),
-                                contentAlignment = Alignment.TopCenter
-                            ) {
-                                LazyColumn(
-                                    modifier = Modifier.padding(12.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    item {
-                                        QrCode(false, "gfd")
-                                    }
-                                    items(7) { index ->
-                                        InfoField(
-                                            infoFieldsData[index].title,
-                                            infoFieldsData[index].value
-                                        )
-                                    }
-                                }
+                            items(7) { index ->
+                                InfoField(
+                                    infoFieldsData[index].title,
+                                    infoFieldsData[index].value
+                                )
                             }
                         }
                     }
@@ -117,9 +113,9 @@ fun Title(title: String, modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 12.dp),
+            .padding(bottom = 12.dp),
     ) {
-        Text(
+        Text( // Image icon сделать кликабельной - закрывает приложухуpopBackStack
             text = "\u2190",
             modifier = Modifier
                 .align(Alignment.CenterStart)
@@ -143,29 +139,27 @@ fun Title(title: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun TicketType(
-    type: String, time: String, unit: String, scope: String, modifier: Modifier = Modifier
+    type: String, time: String, unit: String, scope: String
 ) {
     Column(
         modifier = Modifier.padding(0.dp, 12.dp, 12.dp, 12.dp),
     ) {
-        Box(
+        Text(
+            text = type,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(4.dp))
                 .background(color = Color.LightGray)
-        ) {
-            Text(
-                text = type,
-                modifier = modifier.padding(4.dp),
-                color = Color(0xFF282542),
-                style = TextStyle(
-                    fontSize = 8.sp,
-                    letterSpacing = 2.sp
-                )
+                .padding(4.dp),
+            color = Color(0xFF282542),
+            style = TextStyle(
+                fontSize = 8.sp,
+                letterSpacing = 2.sp
             )
-        }
+        )
         Text(
+//            stringResource(id = R.string.dhsgfhdf(time, unit, scope)) закинуть стрингу в ресурс
             text = "$time $unit, Strefa: $scope",
-            modifier = modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp),
             color = Color.White,
             style = TextStyle(
                 fontSize = 28.sp,
@@ -177,10 +171,10 @@ fun TicketType(
 
 @Composable
 
-fun QrCode(isActive: Boolean, codePath: String, modifier: Modifier = Modifier) {
+fun QrCode(isActive: Boolean, codePath: String) { // переделать с точки зрения тени
     val image = painterResource(R.drawable.qr_code)
 
-    Column(
+    Box(
         modifier = Modifier
             .width(250.dp)
             .clip(shape = RoundedCornerShape(16.dp))
@@ -188,18 +182,19 @@ fun QrCode(isActive: Boolean, codePath: String, modifier: Modifier = Modifier) {
                 color = if (isActive) Color(0xFF81C784) else Color(0xFFE57373)
             )
             .wrapContentHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+//        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
+        Text( // перенести внутрь куда-то
             text = if (isActive) "Активен" else "Недействителен",
-            modifier = modifier.padding(4.dp),
+            modifier = Modifier.padding(4.dp),
             color = Color.White,
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
         )
-        Box(
+            // добавить широкую фоновую вьюху
+        Box( // убрать и передать его свойства имеджу
             modifier = Modifier
                 .size(250.dp, 250.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
@@ -215,7 +210,7 @@ fun QrCode(isActive: Boolean, codePath: String, modifier: Modifier = Modifier) {
                 .padding(28.dp),
             contentAlignment = Alignment.Center
         ) {
-            Image(
+            Image( // прижать к низу
                 painter = image,
                 contentDescription = "QR code",
                 modifier = Modifier.fillMaxSize()
@@ -224,7 +219,7 @@ fun QrCode(isActive: Boolean, codePath: String, modifier: Modifier = Modifier) {
     }
     Text(
         text = "Нажми, чтобы увеличить",
-        modifier = modifier.padding(top = 4.dp, bottom = 16.dp),
+        modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
         color = Color.Gray,
         style = TextStyle(
             fontSize = 14.sp,
@@ -235,7 +230,7 @@ fun QrCode(isActive: Boolean, codePath: String, modifier: Modifier = Modifier) {
 @Composable
 
 fun InfoField(title: String, info: String) {
-    Box(
+    Box( // убрать и передать его свойства колумну
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)

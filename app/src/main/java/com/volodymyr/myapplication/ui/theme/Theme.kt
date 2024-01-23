@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+private val DarkColorScheme = darkColorScheme( // передать сюда свои цвета или сделтаь свою тему
+    primary = Purple80, // импортируются из колора
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
