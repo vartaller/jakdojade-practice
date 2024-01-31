@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -24,6 +24,14 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.6"
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +44,15 @@ android {
 ksp {
     arg("compose-destinations.mode", "navgraphs")
     arg("compose-destinations.moduleName", "list")
+}
+
+android.libraryVariants.all {
+    val variantName = name
+    kotlin.sourceSets {
+        getByName("main") {
+            kotlin.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+        }
+    }
 }
 
 dependencies {

@@ -1,7 +1,6 @@
 package com.volodymyr.app
 
 import com.volodymyr.list.ListNavGraph
-//import com.volodymyr.ticket
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 

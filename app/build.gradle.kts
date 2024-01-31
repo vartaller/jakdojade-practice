@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,11 +41,25 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+
+}
+
+android.applicationVariants.all {
+    val variantName = name
+    kotlin.sourceSets {
+        getByName("main") {
+            kotlin.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+        }
+    }
+}
+
+android.buildTypes.all {
+    val variantName = name
+    kotlin.sourceSets {
+        getByName("main") {
+            kotlin.srcDir(File("build/generated/ksp/$variantName/kotlin"))
         }
     }
 }
