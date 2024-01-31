@@ -1,4 +1,4 @@
-package com.volodymyr.myapplication
+package com.volodymyr.app
 
 import org.junit.Test
 
