@@ -1,8 +1,9 @@
 package com.volodymyr.app
 
-import com.volodymyr.list.ListNavGraph
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
+import com.volodymyr.list.ListNavGraph
+import com.volodymyr.ticket.TicketNavGraph
 
 object RootNavGraph : NavGraphSpec {
     override val route = "root"
@@ -12,6 +13,7 @@ object RootNavGraph : NavGraphSpec {
     override val startRoute = ListNavGraph
 
     override val nestedNavGraphs = listOf(
-        ListNavGraph
+        ListNavGraph,
+        TicketNavGraph
     )
 }

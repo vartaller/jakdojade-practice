@@ -25,6 +25,7 @@ fun MainRoot(finish: () -> Unit) {
         BackHandler { finish() }
     }
 
+
     MyApplicationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -34,7 +35,7 @@ fun MainRoot(finish: () -> Unit) {
                 navController = navController,
                 navGraph = RootNavGraph,
                 dependenciesContainerBuilder = {
-                    dependency(navController)
+                    dependency(CommonNavigationProvider(navController))
                 }
             )
         }

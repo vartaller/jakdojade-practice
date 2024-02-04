@@ -16,6 +16,9 @@ val MainColorScheme = lightColorScheme(
     onPrimary = white,
     secondary = green,
     tertiary = grey,
+    onTertiary = greyLight,
+    surface = greyTransparent,
+    outline = yellow,
     error = red
 )
 

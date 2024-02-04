@@ -3,6 +3,7 @@ package com.volodymyr.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.volodymyr.myapplication.R
 
 data class InfoFieldData(val title: String, val value: String)
 
@@ -16,8 +17,6 @@ val infoFieldsData = listOf(
     InfoFieldData("Kod biletu", "33A52GQ9")
 )
 
-// сделать первоначальный экран
-
 class MainActivity : ComponentActivity() {
 
     private var backPressed = 0L
@@ -30,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            window.statusBarColor = getColor(R.color.violet)
             MainRoot(finish = finish)
         }
     }

@@ -60,10 +60,16 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.compose.foundation:foundation-android:1.6.0")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha02")
+    implementation(project(":common:provider"))
+    implementation(project(":features:ticket"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("io.github.raamcosta.compose-destinations:core:1.3.1-beta")
     ksp("io.github.raamcosta.compose-destinations:ksp:1.3.1-beta")
+
+    implementation(project(mapOf("path" to ":common:ui-theme")))
 }
