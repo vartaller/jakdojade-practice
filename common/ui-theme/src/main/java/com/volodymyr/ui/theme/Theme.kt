@@ -15,11 +15,13 @@ val MainColorScheme = lightColorScheme(
     primary = violet,
     onPrimary = white,
     secondary = green,
-    tertiary = grey,
-    onTertiary = greyLight,
-    surface = greyTransparent,
+    tertiary = grayLight,
+    onTertiary = grayMid,
+    tertiaryContainer = grayTransparent,
+    surface = grayDark,
     outline = yellow,
-    error = red
+    error = red,
+    surfaceTint = black,
 )
 
 private val DarkColorScheme = darkColorScheme()

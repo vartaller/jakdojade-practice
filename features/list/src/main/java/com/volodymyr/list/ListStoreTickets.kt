@@ -25,52 +25,52 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.volodymyr.ui.theme.MainColorScheme
+import com.volodymyr.ui.theme.Typography
 
 @Composable
 fun ListStoreTickets() {
-    var selectedTypeIndex by remember { mutableStateOf(0) }
-    TicketTypeSelector(selectedTypeIndex) { newIndex ->
-        selectedTypeIndex = newIndex
+    val REDUCED_TICKET = stringResource(id = R.string.screen_store_ticket_reduced)
+    val NORMAL_TICKET = stringResource(id = R.string.screen_store_ticket_normal)
+    var selectedTicketType by remember { mutableStateOf(REDUCED_TICKET) }
+    TicketTypeSelector(selectedTicketType = selectedTicketType) { newSelectedTicketType ->
+        selectedTicketType = newSelectedTicketType
     }
     TicketGroup(
         title = stringResource(id = R.string.tickets_group_minutes),
-        selectedTypeIndex = selectedTypeIndex
+        selectedTicketType = selectedTicketType
     )
     Spacer(
         modifier = Modifier
             .height(8.dp)
             .fillMaxWidth()
-            .background(color = Color.LightGray)
+            .background(color = MainColorScheme.onTertiary)
     )
     TicketGroup(
         title = stringResource(id = R.string.tickets_group_hours),
-        selectedTypeIndex = selectedTypeIndex
+        selectedTicketType = selectedTicketType
     )
     Spacer(
         modifier = Modifier
             .height(8.dp)
             .fillMaxWidth()
-            .background(color = Color.LightGray)
+            .background(color = MainColorScheme.onTertiary)
     )
     TicketGroup(
         title = stringResource(id = R.string.tickets_group_grouped),
-        selectedTypeIndex = selectedTypeIndex
+        selectedTicketType = selectedTicketType
     )
 }
 
 
 @Composable
-fun TicketTypeSelector(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
+fun TicketTypeSelector(selectedTicketType: String, onTabSelected: (String) -> Unit) {
     val items = listOf(
         stringResource(id = R.string.screen_store_ticket_reduced),
         stringResource(id = R.string.screen_store_ticket_normal),
@@ -79,24 +79,32 @@ fun TicketTypeSelector(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(24.dp))
-            .background(color = Color.LightGray),
+            .background(color = MainColorScheme.onTertiary),
         horizontalArrangement = Arrangement.Center
     ) {
-        items.forEachIndexed { index, item ->
+        items.forEach { item ->
             Text(
-                text = AnnotatedString(item),
+                text = item,
                 modifier = Modifier
                     .padding(2.dp)
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .background(color = if (selectedTabIndex == index) Color.White else Color.Transparent)
+                    .background(
+                        color = if (selectedTicketType == item) {
+                            MainColorScheme.onPrimary
+                        } else {
+                            Color.Transparent
+                        }
+                    )
                     .clickable {
-                        onTabSelected(index)
+                        onTabSelected(item)
                     }
                     .padding(16.dp, 8.dp, 16.dp, 8.dp),
-                color = if (selectedTabIndex == index) Color.DarkGray else Color.Gray,
-                style = TextStyle(
-                    fontSize = 18.sp
-                )
+                color = if (selectedTicketType == item) {
+                    MainColorScheme.surfaceTint
+                } else {
+                    MainColorScheme.surface
+                },
+                style = Typography.bodyLarge,
             )
         }
     }
@@ -106,62 +114,56 @@ fun TicketTypeSelector(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
 @Composable
 fun TicketGroup(
     title: String,
-    selectedTypeIndex: Int,
+    selectedTicketType: String,
 ) {
-    Column(
+    Text(
+        text = title,
         modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
+            .padding(12.dp)
+            .fillMaxWidth(),
+        color = MainColorScheme.surfaceTint,
+        textAlign = TextAlign.Left,
+        style = Typography.headlineLarge,
+    )
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
     ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(12.dp),
-            color = Color.Black,
-            textAlign = TextAlign.Left,
-            style = TextStyle(
-                fontSize = 20.sp
-            )
+        Spacer(modifier = Modifier.width(8.dp))
+        TicketCard(
+            selectedTicketType = selectedTicketType,
+            provider = stringResource(id = R.string.ticket_provider),
+            scope = stringResource(id = R.string.ticket_scope_country),
+            time = stringResource(id = R.string.ticket_duration_20),
+            unit = stringResource(id = R.string.ticket_unit_minutes),
+            price = stringResource(id = R.string.price_reduced_minutes_lowest),
+            currency = stringResource(id = R.string.currency),
         )
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.width(4.dp))
-            TicketCard(
-                selectedTypeIndex,
-                stringResource(id = R.string.ticket_provider),
-                stringResource(id = R.string.ticket_scope_country),
-                stringResource(id = R.string.ticket_duration_20),
-                stringResource(id = R.string.ticket_unit_minutes),
-                stringResource(id = R.string.price_reduced_minutes_lowest),
-                stringResource(id = R.string.currency),
-            )
-            TicketCard(
-                selectedTypeIndex,
-                stringResource(id = R.string.ticket_provider),
-                stringResource(id = R.string.ticket_scope_country),
-                stringResource(id = R.string.ticket_duration_60),
-                stringResource(id = R.string.ticket_unit_minutes_or_trip),
-                stringResource(id = R.string.price_reduced_minutes_middle),
-                stringResource(id = R.string.currency),
-            )
-            TicketCard(
-                selectedTypeIndex,
-                stringResource(id = R.string.ticket_provider),
-                stringResource(id = R.string.ticket_scope_country),
-                stringResource(id = R.string.ticket_duration_90),
-                stringResource(id = R.string.ticket_unit_minutes),
-                stringResource(id = R.string.price_reduced_minutes_highest),
-                stringResource(id = R.string.currency),
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
+        TicketCard(
+            selectedTicketType = selectedTicketType,
+            provider = stringResource(id = R.string.ticket_provider),
+            scope = stringResource(id = R.string.ticket_scope_country),
+            time = stringResource(id = R.string.ticket_duration_60),
+            unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
+            price = stringResource(id = R.string.price_reduced_minutes_middle),
+            currency = stringResource(id = R.string.currency),
+        )
+        TicketCard(
+            selectedTicketType = selectedTicketType,
+            provider = stringResource(id = R.string.ticket_provider),
+            scope = stringResource(id = R.string.ticket_scope_country),
+            time = stringResource(id = R.string.ticket_duration_90),
+            unit = stringResource(id = R.string.ticket_unit_minutes),
+            price = stringResource(id = R.string.price_reduced_minutes_highest),
+            currency = stringResource(id = R.string.currency),
+        )
     }
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
 fun TicketCard(
-    selectedTypeIndex: Int,
+    selectedTicketType: String,
     provider: String,
     scope: String,
     time: String,
@@ -169,13 +171,6 @@ fun TicketCard(
     price: String,
     currency: String
 ) {
-    val ticketType =
-        if (selectedTypeIndex == 0) stringResource(
-            id = R.string.ticket_type_reduced
-        )
-        else stringResource(
-            id = R.string.ticket_type_normal
-        )
     Column(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(12.dp))
@@ -184,7 +179,7 @@ fun TicketCard(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(8.dp),
             )
-            .background(color = Color.White),
+            .background(color = MainColorScheme.onPrimary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -200,80 +195,70 @@ fun TicketCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = ticketType,
+                text = selectedTicketType,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(
-                        color = if (selectedTypeIndex == 0) MainColorScheme.outline
-                        else Color.LightGray
+                        color = if (selectedTicketType == stringResource(id = R.string.screen_store_ticket_reduced)) {
+                            MainColorScheme.outline
+                        } else {
+                            MainColorScheme.onTertiary
+                        }
                     )
                     .padding(4.dp),
                 color = MainColorScheme.primary,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 12.sp
-                )
+                style = Typography.bodySmall,
             )
             Text(
                 text = provider,
                 modifier = Modifier
                     .padding(8.dp),
-                color = Color.Gray,
+                color = MainColorScheme.surface,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 12.sp
-                )
+                style = Typography.bodySmall,
             )
             Text(
                 text = stringResource(id = R.string.ticket_scope_template, scope),
                 modifier = Modifier
                     .padding(8.dp),
-                color = Color.White,
+                color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 12.sp
-                )
+                style = Typography.bodySmall,
             )
             Text(
                 text = time,
-                color = Color.White,
+                color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontWeight = FontWeight.W500,
-                    fontSize = 80.sp
-                )
+                style = Typography.labelLarge
             )
             Text(
                 text = unit,
                 modifier = Modifier
                     .padding(24.dp, 0.dp, 24.dp, 0.dp),
-                color = Color.White,
+                color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                style = Typography.bodyMedium,
             )
             Spacer(modifier = Modifier.height(48.dp))
         }
         Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                modifier = Modifier
-                    .width(160.dp)
-                    .padding(12.dp),
-                textAlign = TextAlign.Left,
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 24.sp)) {
-                        append(price)
-                    }
-                    append(" ")
-                    append(currency)
-                },
-                style = TextStyle(
-                    fontWeight = FontWeight.W500,
-                    fontSize = 12.sp
-                )
-            )
+        Text(
+            color = MainColorScheme.surfaceTint,
+            modifier = Modifier
+                .width(160.dp)
+                .padding(12.dp),
+            textAlign = TextAlign.Left,
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = 24.sp)) {
+                    append(price)
+                }
+                append(" ")
+                append(currency)
+            },
+            style = Typography.labelSmall,
+        )
     }
 }

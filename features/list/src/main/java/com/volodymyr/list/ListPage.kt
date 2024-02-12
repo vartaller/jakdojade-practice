@@ -28,15 +28,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
+import com.volodymyr.ui.theme.Typography
 
 @Destination(start = true)
 @Composable
@@ -44,12 +41,13 @@ fun ListPage(
     id: Int = 0,
     navigator: NavigationProvider
 ) {
-    var selectedTabListIndex by remember { mutableStateOf(0) }
+    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
+    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
+    var selectedTicketsTab by remember { mutableStateOf(STORE_TICKETS) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MainColorScheme.surface)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -60,10 +58,20 @@ fun ListPage(
                 id = R.string.currency
             )
         )
-        ListSelector(selectedTabListIndex) { newIndex ->
-            selectedTabListIndex = newIndex
+        ListSelector(selectedTicketsTab = selectedTicketsTab) { newIndex ->
+            selectedTicketsTab = newIndex
         }
-        if (selectedTabListIndex == 0) ListStoreTickets() else ListUsersTickets(navigator)
+        Column(
+            modifier = Modifier
+                .background(color = MainColorScheme.tertiary),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (selectedTicketsTab == STORE_TICKETS) {
+                ListStoreTickets()
+            } else {
+                ListUsersTickets(navigator = navigator)
+            }
+        }
     }
 }
 
@@ -86,11 +94,9 @@ fun Title(
         Text(
             text = title,
             modifier = Modifier.align(Alignment.Center),
-            color = Color.White,
+            color = MainColorScheme.onPrimary,
             textAlign = TextAlign.Left,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold, fontSize = 18.sp
-            )
+            style = Typography.titleMedium,
         )
         Row(
             modifier = Modifier
@@ -105,13 +111,11 @@ fun Title(
                 modifier = Modifier
                     .padding(8.dp)
                     .clip(shape = RoundedCornerShape(12.dp))
-                    .background(color = MainColorScheme.onTertiary)
+                    .background(color = MainColorScheme.tertiaryContainer)
                     .padding(6.dp),
-                color = Color.White,
+                color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Left,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                style = Typography.bodyMedium,
             )
             Image(
                 painter = imgProfile,
@@ -130,7 +134,9 @@ fun Title(
 }
 
 @Composable
-fun ListSelector(selectedTabListIndex: Int, onTabSelected: (Int) -> Unit) {
+fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
+    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
+    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
     val items = listOf(
         stringResource(id = R.string.screen_tickets_selector_store),
         stringResource(id = R.string.screen_tickets_selector_users_tickets),
@@ -144,9 +150,9 @@ fun ListSelector(selectedTabListIndex: Int, onTabSelected: (Int) -> Unit) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        items.forEachIndexed { index, item ->
+        items.forEach { item ->
             Text(
-                text = AnnotatedString(item),
+                text = item,
                 modifier = Modifier
                     .drawBehind {
 
@@ -154,7 +160,11 @@ fun ListSelector(selectedTabListIndex: Int, onTabSelected: (Int) -> Unit) {
                         val y = size.height - strokeWidth
 
                         drawLine(
-                            color = if (selectedTabListIndex == index) MainColorScheme.outline else Color.Transparent,
+                            color = if (selectedTicketsTab == item) {
+                                MainColorScheme.outline
+                            } else {
+                                Color.Transparent
+                            },
                             Offset(0f, y),
                             Offset(size.width, y),
                             strokeWidth
@@ -162,12 +172,14 @@ fun ListSelector(selectedTabListIndex: Int, onTabSelected: (Int) -> Unit) {
                     }
                     .padding(8.dp)
                     .clickable {
-                        onTabSelected(index)
+                        onTabSelected(item)
                     },
-                color = if (selectedTabListIndex == index) MainColorScheme.outline else Color.Gray,
-                style = TextStyle(
-                    fontSize = 18.sp
-                )
+                color = if (selectedTicketsTab == item) {
+                    MainColorScheme.outline
+                } else {
+                    Color.Gray
+                },
+                style = Typography.bodyLarge,
             )
         }
     }

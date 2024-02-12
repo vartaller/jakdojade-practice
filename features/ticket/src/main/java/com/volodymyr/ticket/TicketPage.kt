@@ -24,14 +24,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
+import com.volodymyr.ui.theme.Typography
 
 data class InfoFieldData(val title: String, val value: String)
 
@@ -49,14 +47,13 @@ val infoFieldsData = listOf(
 @Composable
 fun TicketPage(
     id: Int = 0,
-    groupName: String = "Ticket page",
     navigator: NavigationProvider
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = Color.White
+                color = MainColorScheme.onPrimary
             )
     ) {
         Column(
@@ -87,12 +84,13 @@ fun TicketPage(
         ) {
             item { Spacer(modifier = Modifier.height(12.dp)) }
             item {
-                QrCode(false)
+                QrCode(isActive = false)
             }
             item { Spacer(modifier = Modifier.height(12.dp)) }
             items(7) { index ->
                 InfoField(
-                    infoFieldsData[index].title, infoFieldsData[index].value
+                    title = infoFieldsData[index].title,
+                    info = infoFieldsData[index].value
                 )
             }
         }
@@ -104,13 +102,6 @@ fun Title(
     title: String,
     pressOnBack: () -> Unit = {},
 ) {
-//    val navController = rememberNavController()
-
-//    NavHost(navController = navController, startDestination = "profile") {
-//        composable("myTicket") { MainActivity }
-////        composable("friendslist") { FriendsList( /* ... */ ) }
-//        // Add more destinations similarly.
-//    }
 
     val imgArrowBack = painterResource(R.drawable.arrow_back)
     Box(
@@ -133,11 +124,9 @@ fun Title(
         Text(
             text = title,
             modifier = Modifier.align(Alignment.Center),
-            color = Color.White,
+            color = MainColorScheme.onPrimary,
             textAlign = TextAlign.Left,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold, fontSize = 20.sp
-            )
+            style = Typography.titleMedium,
         )
     }
 }
@@ -153,20 +142,16 @@ fun TicketType(
             text = type,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(4.dp))
-                .background(color = Color.LightGray)
+                .background(color = MainColorScheme.onTertiary)
                 .padding(4.dp),
             color = MainColorScheme.primary,
-            style = TextStyle(
-                fontSize = 8.sp, letterSpacing = 2.sp
-            )
+            style = Typography.displaySmall,
         )
         Text(
             text = stringResource(id = R.string.ticket_domain, time, unit, scope),
             modifier = Modifier.padding(top = 12.dp),
-            color = Color.White,
-            style = TextStyle(
-                fontSize = 28.sp, fontWeight = FontWeight.Bold
-            )
+            color = MainColorScheme.onPrimary,
+            style = Typography.displayMedium,
         )
     }
 }
@@ -184,7 +169,11 @@ fun QrCode(isActive: Boolean) {
             )
             .clip(shape = RoundedCornerShape(16.dp))
             .background(
-                color = if (isActive) MainColorScheme.tertiary else MainColorScheme.error
+                color = if (isActive) {
+                    MainColorScheme.tertiary
+                } else {
+                    MainColorScheme.error
+                }
             )
             .wrapContentHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,9 +183,10 @@ fun QrCode(isActive: Boolean) {
                 stringResource(id = R.string.ticket_status_active)
             } else {
                 stringResource(id = R.string.ticket_status_inactive)
-            }, modifier = Modifier.padding(4.dp), color = Color.White, style = TextStyle(
-                fontSize = 16.sp, fontWeight = FontWeight.Bold
-            )
+            },
+            modifier = Modifier.padding(4.dp),
+            color = MainColorScheme.onPrimary,
+            style = Typography.titleMedium,
         )
         Image(
             painter = imgQr,
@@ -205,7 +195,7 @@ fun QrCode(isActive: Boolean) {
                 .size(250.dp, 250.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
                 .background(
-                    color = Color.White
+                    color = MainColorScheme.onPrimary
                 )
                 .padding(28.dp)
                 .fillMaxSize()
@@ -214,10 +204,8 @@ fun QrCode(isActive: Boolean) {
     Text(
         text = stringResource(id = R.string.screen_ticket_qr_scale),
         modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
-        color = Color.Gray,
-        style = TextStyle(
-            fontSize = 14.sp,
-        )
+        color = MainColorScheme.surface,
+        style = Typography.bodyMedium,
     )
 }
 
@@ -234,14 +222,15 @@ fun InfoField(title: String, info: String) {
             .padding(16.dp)
     ) {
         Text(
-            text = title, color = Color.Gray, style = TextStyle(
-                fontSize = 12.sp,
-            )
+            text = title,
+            color = MainColorScheme.surface,
+            style = Typography.bodySmall,
         )
         Text(
-            text = info, modifier = Modifier, style = TextStyle(
-                fontSize = 18.sp,
-            )
+            text = info,
+            modifier = Modifier,
+            color = MainColorScheme.surfaceTint,
+            style = Typography.bodyLarge,
         )
     }
 }

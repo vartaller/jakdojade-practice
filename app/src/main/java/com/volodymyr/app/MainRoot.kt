@@ -2,7 +2,6 @@ package com.volodymyr.app
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +10,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
+import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.MyApplicationTheme
 
 @Composable
@@ -29,7 +29,7 @@ fun MainRoot(finish: () -> Unit) {
     MyApplicationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MainColorScheme.primary
         ) {
             DestinationsNavHost(
                 navController = navController,

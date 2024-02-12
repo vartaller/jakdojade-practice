@@ -24,13 +24,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.volodymyr.provider.NavigationProvider
+import com.volodymyr.ui.theme.MainColorScheme
+import com.volodymyr.ui.theme.Typography
 
 val date = listOf("wtorek", "16.01.2024", "11:45");
 val columnHeight = 300;
@@ -40,69 +38,64 @@ val columnWidth = 180;
 fun ListUsersTickets(
     navigator: NavigationProvider
 ) {
-    Column(
+    TicketCard(
+        navigator = navigator,
+        type = stringResource(id = R.string.ticket_type_reduced),
+        provider = stringResource(id = R.string.ticket_provider),
+        scope = stringResource(id = R.string.ticket_scope_country),
+        time = stringResource(id = R.string.ticket_duration_60),
+        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
+        price = stringResource(id = R.string.price_reduced_minutes_middle),
+        currency = stringResource(id = R.string.currency),
+    )
+    Spacer(
         modifier = Modifier
+            .height(8.dp)
             .fillMaxWidth()
-    ) {
-        TicketCard(
-            navigator,
-            stringResource(id = R.string.ticket_type_reduced),
-            stringResource(id = R.string.ticket_provider),
-            stringResource(id = R.string.ticket_scope_country),
-            stringResource(id = R.string.ticket_duration_60),
-            stringResource(id = R.string.ticket_unit_minutes_or_trip),
-            stringResource(id = R.string.price_reduced_minutes_middle),
-            stringResource(id = R.string.currency),
-        )
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-                .fillMaxWidth()
-                .background(color = Color.LightGray)
-        )
-        TicketCard(
-            navigator,
-            stringResource(id = R.string.ticket_type_reduced),
-            stringResource(id = R.string.ticket_provider),
-            stringResource(id = R.string.ticket_scope_country),
-            stringResource(id = R.string.ticket_duration_60),
-            stringResource(id = R.string.ticket_unit_minutes_or_trip),
-            stringResource(id = R.string.price_reduced_minutes_middle),
-            stringResource(id = R.string.currency),
-        )
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-                .fillMaxWidth()
-                .background(color = Color.LightGray)
-        )
-        TicketCard(
-            navigator,
-            stringResource(id = R.string.ticket_type_reduced),
-            stringResource(id = R.string.ticket_provider),
-            stringResource(id = R.string.ticket_scope_country),
-            stringResource(id = R.string.ticket_duration_60),
-            stringResource(id = R.string.ticket_unit_minutes_or_trip),
-            stringResource(id = R.string.price_reduced_minutes_middle),
-            stringResource(id = R.string.currency),
-        )
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-                .fillMaxWidth()
-                .background(color = Color.LightGray)
-        )
-        TicketCard(
-            navigator,
-            stringResource(id = R.string.ticket_type_reduced),
-            stringResource(id = R.string.ticket_provider),
-            stringResource(id = R.string.ticket_scope_country),
-            stringResource(id = R.string.ticket_duration_60),
-            stringResource(id = R.string.ticket_unit_minutes_or_trip),
-            stringResource(id = R.string.price_reduced_minutes_middle),
-            stringResource(id = R.string.currency),
-        )
-    }
+            .background(color = MainColorScheme.onTertiary)
+    )
+    TicketCard(
+        navigator = navigator,
+        type = stringResource(id = R.string.ticket_type_reduced),
+        provider = stringResource(id = R.string.ticket_provider),
+        scope = stringResource(id = R.string.ticket_scope_country),
+        time = stringResource(id = R.string.ticket_duration_60),
+        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
+        price = stringResource(id = R.string.price_reduced_minutes_middle),
+        currency = stringResource(id = R.string.currency),
+    )
+    Spacer(
+        modifier = Modifier
+            .height(8.dp)
+            .fillMaxWidth()
+            .background(color = MainColorScheme.onTertiary)
+    )
+    TicketCard(
+        navigator = navigator,
+        type = stringResource(id = R.string.ticket_type_reduced),
+        provider = stringResource(id = R.string.ticket_provider),
+        scope = stringResource(id = R.string.ticket_scope_country),
+        time = stringResource(id = R.string.ticket_duration_60),
+        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
+        price = stringResource(id = R.string.price_reduced_minutes_middle),
+        currency = stringResource(id = R.string.currency),
+    )
+    Spacer(
+        modifier = Modifier
+            .height(8.dp)
+            .fillMaxWidth()
+            .background(color = MainColorScheme.onTertiary)
+    )
+    TicketCard(
+        navigator = navigator,
+        type = stringResource(id = R.string.ticket_type_reduced),
+        provider = stringResource(id = R.string.ticket_provider),
+        scope = stringResource(id = R.string.ticket_scope_country),
+        time = stringResource(id = R.string.ticket_duration_60),
+        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
+        price = stringResource(id = R.string.price_reduced_minutes_middle),
+        currency = stringResource(id = R.string.currency),
+    )
 }
 
 @Composable
@@ -121,11 +114,10 @@ fun TicketCard(
             .height(16.dp)
     )
     Text(
+        color = MainColorScheme.surfaceTint,
         text = date[1],
         textAlign = TextAlign.Left,
-        style = TextStyle(
-            fontSize = 16.sp
-        ),
+        style = Typography.bodyMedium,
         modifier = Modifier
             .padding(16.dp, 0.dp, 16.dp, 0.dp)
             .fillMaxWidth()
@@ -136,13 +128,20 @@ fun TicketCard(
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        TicketShapeColumn(navigator, type, provider, scope, time, unit)
+        TicketShapeColumn(
+            navigator = navigator,
+            type = type,
+            provider = provider,
+            scope = scope,
+            time = time,
+            unit = unit
+        )
         Spacer(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(8.dp)
         )
-        TicketDataColumn(price, currency)
+        TicketDataColumn(price = price, currency = currency)
     }
 }
 
@@ -169,7 +168,7 @@ fun TicketShapeColumn(
             .height(columnHeight.dp)
             .clip(shape = RoundedCornerShape(12.dp))
             .background(
-                color = Color.Gray
+                color = MainColorScheme.surface
             ),
     ) {
         Text(
@@ -178,13 +177,11 @@ fun TicketShapeColumn(
                 .padding(4.dp)
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(8.dp, 8.dp, 4.dp, 4.dp))
-                .background(color = Color.LightGray)
+                .background(color = MainColorScheme.onTertiary)
                 .padding(4.dp),
-            color = Color.Black,
+            color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 12.sp
-            )
+            style = Typography.bodySmall,
         )
         Text(
             text = provider,
@@ -192,11 +189,9 @@ fun TicketShapeColumn(
                 .padding(4.dp)
                 .fillMaxWidth()
                 .padding(4.dp),
-            color = Color.DarkGray,
+            color = MainColorScheme.surface,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 12.sp
-            )
+            style = Typography.bodySmall,
         )
         Text(
             text = scope,
@@ -204,30 +199,23 @@ fun TicketShapeColumn(
                 .padding(4.dp)
                 .fillMaxWidth()
                 .padding(4.dp),
-            color = Color.Black,
+            color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 12.sp
-            )
+            style = Typography.bodySmall,
         )
         Text(
             text = time,
             modifier = Modifier.fillMaxWidth(),
-            color = Color.Black,
+            color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontWeight = FontWeight.W500,
-                fontSize = 80.sp
-            )
+            style = Typography.labelLarge,
         )
         Text(
             text = unit,
             modifier = Modifier.fillMaxWidth(),
-            color = Color.Black,
+            color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 16.sp
-            )
+            style = Typography.bodyMedium,
         )
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -239,16 +227,14 @@ fun TicketShapeColumn(
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
-                    .background(color = Color.White)
+                    .background(color = MainColorScheme.onPrimary)
                     .padding(12.dp)
                     .clickable {
                         navigator.navigateToTicket(resId = 0)
                     },
-                color = Color.Black,
+                color = MainColorScheme.surfaceTint,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 12.sp
-                )
+                style = Typography.bodySmall,
             )
         }
     }
@@ -256,7 +242,7 @@ fun TicketShapeColumn(
 
 
 @Composable
-fun TicketDataColumn( price: String, currency: String) {
+fun TicketDataColumn(price: String, currency: String) {
     val imgCalendar = painterResource(R.drawable.calendar)
     val imgPrice = painterResource(R.drawable.price)
     Column(
@@ -276,10 +262,8 @@ fun TicketDataColumn( price: String, currency: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                color = Color.Black,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                color = MainColorScheme.surfaceTint,
+                style = Typography.bodyMedium,
             )
         }
         Row {
@@ -299,10 +283,8 @@ fun TicketDataColumn( price: String, currency: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                color = Color.Black,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                color = MainColorScheme.surfaceTint,
+                style = Typography.bodyMedium,
             )
         }
         Row {
@@ -312,10 +294,8 @@ fun TicketDataColumn( price: String, currency: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                color = Color.Black,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                color = MainColorScheme.surfaceTint,
+                style = Typography.bodyMedium,
             )
         }
         Row {
@@ -325,7 +305,7 @@ fun TicketDataColumn( price: String, currency: String) {
                     .padding(4.dp)
                     .fillMaxWidth()
                     .height(2.dp)
-                    .background(color = Color.LightGray)
+                    .background(color = MainColorScheme.onTertiary)
             )
         }
         Row {
@@ -345,10 +325,8 @@ fun TicketDataColumn( price: String, currency: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                color = Color.Black,
-                style = TextStyle(
-                    fontSize = 16.sp
-                )
+                color = MainColorScheme.surfaceTint,
+                style = Typography.bodyMedium,
             )
         }
         Row {
@@ -359,14 +337,11 @@ fun TicketDataColumn( price: String, currency: String) {
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
-                    .background(color = Color.LightGray)
+                    .background(color = MainColorScheme.onTertiary)
                     .padding(8.dp),
-                color = Color.Black,
+                color = MainColorScheme.surfaceTint,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
+                style = Typography.headlineSmall,
             )
         }
         Row {
@@ -376,7 +351,7 @@ fun TicketDataColumn( price: String, currency: String) {
                     .padding(4.dp)
                     .fillMaxWidth()
                     .height(2.dp)
-                    .background(color = Color.LightGray)
+                    .background(color = MainColorScheme.onTertiary)
             )
         }
         Spacer(
@@ -391,12 +366,9 @@ fun TicketDataColumn( price: String, currency: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                color = Color.Black,
+                color = MainColorScheme.surfaceTint,
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 16.sp
-                )
+                style = Typography.headlineMedium,
             )
         }
     }
