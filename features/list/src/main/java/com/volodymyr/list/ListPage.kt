@@ -1,0 +1,187 @@
+package com.volodymyr.list
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.volodymyr.provider.NavigationProvider
+import com.volodymyr.ui.theme.MainColorScheme
+import com.volodymyr.ui.theme.Typography
+
+@Destination(start = true)
+@Composable
+fun ListPage(
+    id: Int = 0,
+    navigator: NavigationProvider
+) {
+    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
+    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
+    var selectedTicketsTab by remember { mutableStateOf(STORE_TICKETS) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Title(
+            stringResource(id = R.string.screen_tickets_title),
+            balance = 4.80,
+            unit = stringResource(
+                id = R.string.currency
+            )
+        )
+        ListSelector(selectedTicketsTab = selectedTicketsTab) { newIndex ->
+            selectedTicketsTab = newIndex
+        }
+        Column(
+            modifier = Modifier
+                .background(color = MainColorScheme.tertiary),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (selectedTicketsTab == STORE_TICKETS) {
+                ListStoreTickets()
+            } else {
+                ListUsersTickets(navigator = navigator)
+            }
+        }
+    }
+}
+
+@Composable
+fun Title(
+    title: String,
+    balance: Double,
+    unit: String,
+) {
+    val imgProfile = painterResource(R.drawable.profile)
+    val balanceFormatted = String.format("%.2f", balance)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = MainColorScheme.primary
+            )
+            .padding(bottom = 12.dp),
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.align(Alignment.Center),
+            color = MainColorScheme.onPrimary,
+            textAlign = TextAlign.Left,
+            style = Typography.titleMedium,
+        )
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd),
+        ) {
+            Text(
+                text = stringResource(
+                    id = R.string.price,
+                    balanceFormatted,
+                    unit
+                ),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clip(shape = RoundedCornerShape(12.dp))
+                    .background(color = MainColorScheme.tertiaryContainer)
+                    .padding(6.dp),
+                color = MainColorScheme.onPrimary,
+                textAlign = TextAlign.Left,
+                style = Typography.bodyMedium,
+            )
+            Image(
+                painter = imgProfile,
+                contentDescription = stringResource(id = R.string.screen_tickets_image_profile),
+                modifier = Modifier
+                    .padding(8.dp, 12.dp, 8.dp, 12.dp)
+                    .size(20.dp)
+                    .background(
+                        color = Color.Transparent
+                    )
+                    .fillMaxSize(),
+//                    .clickable { pressOnBack.invoke() }
+            )
+        }
+    }
+}
+
+@Composable
+fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
+    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
+    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
+    val items = listOf(
+        stringResource(id = R.string.screen_tickets_selector_store),
+        stringResource(id = R.string.screen_tickets_selector_users_tickets),
+    )
+    Row(
+        modifier = Modifier
+            .background(
+                color = MainColorScheme.primary
+            )
+            .padding(36.dp, 0.dp, 36.dp, 0.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        items.forEach { item ->
+            Text(
+                text = item,
+                modifier = Modifier
+                    .drawBehind {
+
+                        val strokeWidth = 5F
+                        val y = size.height - strokeWidth
+
+                        drawLine(
+                            color = if (selectedTicketsTab == item) {
+                                MainColorScheme.outline
+                            } else {
+                                Color.Transparent
+                            },
+                            Offset(0f, y),
+                            Offset(size.width, y),
+                            strokeWidth
+                        )
+                    }
+                    .padding(8.dp)
+                    .clickable {
+                        onTabSelected(item)
+                    },
+                color = if (selectedTicketsTab == item) {
+                    MainColorScheme.outline
+                } else {
+                    Color.Gray
+                },
+                style = Typography.bodyLarge,
+            )
+        }
+    }
+}
+

@@ -15,4 +15,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "My Application"
 include(":app")
- 
+include(":features:ticket")
+include(":features:list")
+include(":common")
+include(":common:ui-theme")
+include(":common:provider")

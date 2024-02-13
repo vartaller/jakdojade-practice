@@ -1,0 +1,60 @@
+<resources>
+    <!-- General strings -->
+    <string name="price">%1$s %2$s</string>
+    <string name="currency">PLN</string>
+
+    <!-- Screen: user's tickets -->
+    <string name="screen_tickets_title">Билеты</string>
+    <string name="screen_tickets_image_profile">Profile</string>
+    <string name="screen_tickets_selector_store">Магазин</string>
+    <string name="screen_tickets_selector_users_tickets">Твои билеты</string>
+
+    <!-- Screen: tickets store -->
+    <string name="screen_store_ticket_reduced">Льготные</string>
+    <string name="screen_store_ticket_normal">Обычные</string>
+
+    <!-- Tickets group -->
+    <string name="tickets_group_minutes">Time limit</string>
+    <string name="tickets_group_hours">Short term</string>
+    <string name="tickets_group_grouped">Group</string>
+
+    <!-- Ticket card data -->
+    <!--    <string name="ticket_status_active">Активен</string>-->
+    <!--    <string name="ticket_status_inactive">Недействителен</string>-->
+    <string name="ticket_type_normal">NORMALNY</string>
+    <string name="ticket_type_reduced">ULGOWY</string>
+    <string name="ticket_duration_90">90</string>
+    <string name="ticket_duration_60">60</string>
+    <string name="ticket_duration_20">20</string>
+    <string name="ticket_scope_template">Zone: %1$s</string>
+    <string name="ticket_scope_country">I+II+III+IV</string>
+    <string name="ticket_scope_city">I+II+III</string>
+    <string name="ticket_unit_minutes">minut</string>
+    <string name="ticket_unit_minutes_or_trip">minut or single trip</string>
+    <string name="ticket_provider">ZTP w Krakowie</string>
+    <string name="ticket_submit">Предьяви для контроля</string>
+    <string name="ticket_field_from">Wazny od</string>
+    <string name="ticket_field_to">Wazny do</string>
+    <string name="ticket_buy_again">Купи заново</string>
+    <string name="ticket_see_more">Покажи больше</string>
+    <string name="ticket_date">Дата</string>
+    <!--    <string name="ticket_field_phone">Numer telefonu</string>-->
+    <!--    <string name="ticket_field_vehicle">Numer boczny pojazdu</string>-->
+    <!--    <string name="ticket_field_price">Cena</string>-->
+    <!--    <string name="ticket_field_provider">Wystawca biletu</string>-->
+    <!--    <string name="ticket_field_code">Kod biletu</string>-->
+
+    <!-- Ticket price -->
+    <string name="price_reduced_minutes_lowest">2,00</string>
+    <string name="price_reduced_minutes_middle">3,00</string>
+    <string name="price_reduced_minutes_highest">4,00</string>
+    <string name="price_normal_minutes_lowest">4,00</string>
+    <string name="price_normal_minutes_middle">6,00</string>
+    <string name="price_normal_minutes_highest">8,00</string>
+
+    <!-- Screen: purchased ticket -->
+    <!--    <string name="screen_ticket_title">Ticket control</string>-->
+    <!--    <string name="screen_ticket_qr_scale">Нажми, чтобы увеличить</string>-->
+    <!--    <string name="screen_ticket_image_qr">QR code</string>-->
+    <!--    <string name="screen_ticket_image_arrow_back">Вернуться</string>-->
+</resources>

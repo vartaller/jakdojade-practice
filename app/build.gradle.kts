@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -40,11 +41,25 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+
+}
+
+android.applicationVariants.all {
+    val variantName = name
+    kotlin.sourceSets {
+        getByName("main") {
+            kotlin.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+        }
+    }
+}
+
+android.buildTypes.all {
+    val variantName = name
+    kotlin.sourceSets {
+        getByName("main") {
+            kotlin.srcDir(File("build/generated/ksp/$variantName/kotlin"))
         }
     }
 }
@@ -59,6 +74,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.3.1")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation(project(":common:provider"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -66,4 +84,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation(project(mapOf("path" to ":features:ticket")))
+    implementation(project(mapOf("path" to ":features:list")))
+    implementation(project(mapOf("path" to ":common:ui-theme")))
+
+    implementation("io.github.raamcosta.compose-destinations:core:1.3.1-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.3.1-beta")
+
 }
