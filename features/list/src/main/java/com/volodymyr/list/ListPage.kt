@@ -16,10 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,21 +28,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
+
 @Destination(start = true)
 @Composable
 fun ListPage(
     id: Int = 0,
-    navigator: NavigationProvider
+    navigator: NavigationProvider,
+    viewModel: ListPageViewModel = hiltViewModel(),
 ) {
-    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
-    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
-    var selectedTicketsTab by remember { mutableStateOf(STORE_TICKETS) }
+    val state by viewModel.uiState.collectAsState()
 
+    val selectedTicketsTab = state.currentTicketsTab
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,14 +59,15 @@ fun ListPage(
             )
         )
         ListSelector(selectedTicketsTab = selectedTicketsTab) { newIndex ->
-            selectedTicketsTab = newIndex
+//            selectedTicketsTab = newIndex
+            viewModel.updateState(newIndex)
         }
         Column(
             modifier = Modifier
                 .background(color = MainColorScheme.tertiary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (selectedTicketsTab == STORE_TICKETS) {
+            if (selectedTicketsTab == TicketsTab.STORE_TICKETS) {
                 ListStoreTickets()
             } else {
                 ListUsersTickets(navigator = navigator)
@@ -127,6 +128,7 @@ fun Title(
                         color = Color.Transparent
                     )
                     .fillMaxSize(),
+// use to close app by clicking back
 //                    .clickable { pressOnBack.invoke() }
             )
         }
@@ -134,13 +136,10 @@ fun Title(
 }
 
 @Composable
-fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
-    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
-    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
-    val items = listOf(
-        stringResource(id = R.string.screen_tickets_selector_store),
-        stringResource(id = R.string.screen_tickets_selector_users_tickets),
-    )
+fun ListSelector(
+    selectedTicketsTab: TicketsTab,
+    onTabSelected: (TicketsTab) -> Unit
+) {
     Row(
         modifier = Modifier
             .background(
@@ -150,9 +149,9 @@ fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        items.forEach { item ->
+        TicketsTab.values().forEach { item ->
             Text(
-                text = item,
+                text = stringResource(id = item.tab),
                 modifier = Modifier
                     .drawBehind {
 

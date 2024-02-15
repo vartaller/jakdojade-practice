@@ -36,6 +36,7 @@ import com.volodymyr.ui.theme.Typography
 
 @Composable
 fun ListStoreTickets() {
+
     val REDUCED_TICKET = stringResource(id = R.string.screen_store_ticket_reduced)
     val NORMAL_TICKET = stringResource(id = R.string.screen_store_ticket_normal)
     var selectedTicketType by remember { mutableStateOf(REDUCED_TICKET) }
