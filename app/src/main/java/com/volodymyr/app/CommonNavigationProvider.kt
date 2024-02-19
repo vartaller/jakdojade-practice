@@ -1,6 +1,6 @@
 package com.volodymyr.app
 
-import androidx.navigation.NavController;
+import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigateTo
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ticket.destinations.TicketPageDestination

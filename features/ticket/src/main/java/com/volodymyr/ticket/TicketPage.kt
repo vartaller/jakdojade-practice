@@ -17,38 +17,34 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
-data class InfoFieldData(val title: String, val value: String)
-
-val infoFieldsData = listOf(
-    InfoFieldData("Wazny od", "16.01.2024 11:45:47"),
-    InfoFieldData("Wazny do", "16.01.2024 12:05:47"),
-    InfoFieldData("Numer telefonu", "49 765765765"),
-    InfoFieldData("Numer boczny pojazdu", "HL417"),
-    InfoFieldData("Cena", "4,00 zl"),
-    InfoFieldData("Wystawca biletu", "ZTP w Krakowie"),
-    InfoFieldData("Kod biletu", "33A52GQ9")
-)
 
 @Destination(start = true)
 @Composable
 fun TicketPage(
     id: Int = 0,
-    navigator: NavigationProvider
+    navigator: NavigationProvider,
+    viewModel: TicketPageViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,16 +60,19 @@ fun TicketPage(
                 .padding(12.dp)
         ) {
             Title(
-                stringResource(id = R.string.screen_ticket_title),
+                img = painterResource(id = state.imgArrowBackId.imgId),
+                title = stringResource(id = state.screenTitle.titleId),
+                textBack = stringResource(id = state.textBack.textId),
                 pressOnBack = {
                     navigator.navigateUp()
                 },
             )
             TicketType(
-                stringResource(id = R.string.ticket_type_normal),
-                stringResource(id = R.string.ticket_duration_20),
-                stringResource(id = R.string.ticket_unit_minutes),
-                stringResource(id = R.string.ticket_scope_city),
+                type = stringResource(id = state.ticketType.typeId),
+                time = state.ticketTime,
+                unit = state.ticketTimeUnit,
+                scope = state.ticketScope,
+                format = state.textScopeFormat.textId
             )
         }
         LazyColumn(
@@ -84,14 +83,17 @@ fun TicketPage(
         ) {
             item { Spacer(modifier = Modifier.height(12.dp)) }
             item {
-                QrCode(isActive = false)
+                QrCode(
+                    isActive = false,
+                    textTicketActive = stringResource(id = state.textTicketActive.textId),
+                    textTicketInactive = stringResource(id = state.textTicketInactive.textId),
+                    textQrDescription = stringResource(id = state.textQrDescription.textId),
+                    textQrScale = stringResource(id = state.textQrScale.textId),
+                )
             }
             item { Spacer(modifier = Modifier.height(12.dp)) }
-            items(7) { index ->
-                InfoField(
-                    title = infoFieldsData[index].title,
-                    info = infoFieldsData[index].value
-                )
+            items(state.ticketValues.size) { index ->
+                InfoField(model = state.ticketValues[index])
             }
         }
     }
@@ -99,19 +101,19 @@ fun TicketPage(
 
 @Composable
 fun Title(
+    img: Painter,
     title: String,
+    textBack: String,
     pressOnBack: () -> Unit = {},
 ) {
-
-    val imgArrowBack = painterResource(R.drawable.arrow_back)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 12.dp),
     ) {
         Image(
-            painter = imgArrowBack,
-            contentDescription = stringResource(id = R.string.screen_ticket_image_arrow_back),
+            painter = img,
+            contentDescription = textBack,
             modifier = Modifier
                 .size(20.dp)
                 .align(Alignment.CenterStart)
@@ -133,7 +135,7 @@ fun Title(
 
 @Composable
 fun TicketType(
-    type: String, time: String, unit: String, scope: String
+    type: String, time: String, unit: String, scope: String, format: Int
 ) {
     Column(
         modifier = Modifier.padding(0.dp, 12.dp, 12.dp, 12.dp),
@@ -148,7 +150,7 @@ fun TicketType(
             style = Typography.displaySmall,
         )
         Text(
-            text = stringResource(id = R.string.ticket_domain, time, unit, scope),
+            text = stringResource(id = format, time, unit, scope),
             modifier = Modifier.padding(top = 12.dp),
             color = MainColorScheme.onPrimary,
             style = Typography.displayMedium,
@@ -157,7 +159,13 @@ fun TicketType(
 }
 
 @Composable
-fun QrCode(isActive: Boolean) {
+fun QrCode(
+    isActive: Boolean,
+    textTicketActive: String,
+    textTicketInactive: String,
+    textQrDescription: String,
+    textQrScale: String,
+) {
     val imgQr = painterResource(R.drawable.qr_code)
 
     Column(
@@ -180,9 +188,9 @@ fun QrCode(isActive: Boolean) {
     ) {
         Text(
             text = if (isActive) {
-                stringResource(id = R.string.ticket_status_active)
+                textTicketActive
             } else {
-                stringResource(id = R.string.ticket_status_inactive)
+                textTicketInactive
             },
             modifier = Modifier.padding(4.dp),
             color = MainColorScheme.onPrimary,
@@ -190,7 +198,7 @@ fun QrCode(isActive: Boolean) {
         )
         Image(
             painter = imgQr,
-            contentDescription = stringResource(id = R.string.screen_ticket_image_qr),
+            contentDescription = textQrDescription,
             modifier = Modifier
                 .size(250.dp, 250.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
@@ -202,7 +210,7 @@ fun QrCode(isActive: Boolean) {
         )
     }
     Text(
-        text = stringResource(id = R.string.screen_ticket_qr_scale),
+        text = textQrScale,
         modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
         color = MainColorScheme.surface,
         style = Typography.bodyMedium,
@@ -210,7 +218,7 @@ fun QrCode(isActive: Boolean) {
 }
 
 @Composable
-fun InfoField(title: String, info: String) {
+fun InfoField(model: TicketDataModel) {
     Column(
         modifier = Modifier
             .padding(bottom = 12.dp)
@@ -222,12 +230,12 @@ fun InfoField(title: String, info: String) {
             .padding(16.dp)
     ) {
         Text(
-            text = title,
+            text = stringResource(id = model.title.nameId),
             color = MainColorScheme.surface,
             style = Typography.bodySmall,
         )
         Text(
-            text = info,
+            text = model.value,
             modifier = Modifier,
             color = MainColorScheme.surfaceTint,
             style = Typography.bodyLarge,

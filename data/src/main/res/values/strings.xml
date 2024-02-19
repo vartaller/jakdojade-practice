@@ -4,8 +4,11 @@
     <string name="currency_pln">PLN</string>
     <string name="balance_format">%.2f</string>
 
+    <!-- Screen title -->
+    <string name="screen_title_tickets">Билеты</string>
+    <string name="screen_title_purchased_ticked">Ticket Control</string>
+
     <!-- Screen: user's tickets -->
-    <string name="screen_tickets_title">Билеты</string>
     <string name="screen_tickets_image_profile">Profile</string>
     <string name="screen_tickets_selector_store">Магазин</string>
     <string name="screen_tickets_selector_users_tickets">Твои билеты</string>
@@ -13,6 +16,9 @@
     <!-- Screen: tickets store -->
     <string name="screen_store_tickets_reduced">Льготные</string>
     <string name="screen_store_tickets_regular">Обычные</string>
+    <string name="screen_store_ticket_reduced">Льготный</string>
+    <string name="screen_store_ticket_regular">Обычный</string>
+
 
     <!-- Tickets term / group -->
     <string name="tickets_term_minutes">Time limit</string>

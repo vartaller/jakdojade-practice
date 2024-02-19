@@ -16,10 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,21 +28,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
+
 @Destination(start = true)
 @Composable
 fun ListPage(
     id: Int = 0,
-    navigator: NavigationProvider
+    navigator: NavigationProvider,
+    viewModel: ListPageViewModel = hiltViewModel(),
 ) {
-    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
-    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
-    var selectedTicketsTab by remember { mutableStateOf(STORE_TICKETS) }
+    val state by viewModel.uiState.collectAsState()
 
+    val selectedTicketsTab = state.ticketsTab
+    val selectedTicketsType = state.ticketsType
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,24 +53,25 @@ fun ListPage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(
-            stringResource(id = R.string.screen_tickets_title),
+            state,
+            stringResource(id = state.screenTitle.titleId),
             balance = 4.80,
-            unit = stringResource(
-                id = R.string.currency
+            currency = stringResource(
+                id = state.currency.currencyId
             )
         )
-        ListSelector(selectedTicketsTab = selectedTicketsTab) { newIndex ->
-            selectedTicketsTab = newIndex
+        ListSelector(selectedTicketsTab = selectedTicketsTab) { newTicketsTab ->
+            viewModel.updateTabState(newTicketsTab = newTicketsTab)
         }
         Column(
             modifier = Modifier
                 .background(color = MainColorScheme.tertiary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (selectedTicketsTab == STORE_TICKETS) {
-                ListStoreTickets()
+            if (selectedTicketsTab == TicketsTab.STORE) {
+                ListStoreTickets(state = state, selectedTicketsType = selectedTicketsType)
             } else {
-                ListUsersTickets(navigator = navigator)
+                ListUsersTickets(state = state, navigator = navigator)
             }
         }
     }
@@ -77,12 +79,17 @@ fun ListPage(
 
 @Composable
 fun Title(
+    state: ListPageUiState,
     title: String,
     balance: Double,
-    unit: String,
+    currency: String,
 ) {
-    val imgProfile = painterResource(R.drawable.profile)
-    val balanceFormatted = String.format("%.2f", balance)
+    val imgProfile = painterResource(state.imgProfile.imgId)
+    val balanceFormatted = String.format(
+        stringResource(
+            id = state.balanceFormat.formatId
+        ), balance
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,9 +111,9 @@ fun Title(
         ) {
             Text(
                 text = stringResource(
-                    id = R.string.price,
+                    id = state.priceFormat.formatId,
                     balanceFormatted,
-                    unit
+                    currency
                 ),
                 modifier = Modifier
                     .padding(8.dp)
@@ -119,7 +126,7 @@ fun Title(
             )
             Image(
                 painter = imgProfile,
-                contentDescription = stringResource(id = R.string.screen_tickets_image_profile),
+                contentDescription = stringResource(id = state.imgDescription.descriptionId),
                 modifier = Modifier
                     .padding(8.dp, 12.dp, 8.dp, 12.dp)
                     .size(20.dp)
@@ -127,6 +134,7 @@ fun Title(
                         color = Color.Transparent
                     )
                     .fillMaxSize(),
+// ------------------ use to close app by clicking back
 //                    .clickable { pressOnBack.invoke() }
             )
         }
@@ -134,13 +142,10 @@ fun Title(
 }
 
 @Composable
-fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
-    val STORE_TICKETS = stringResource(id = R.string.screen_tickets_selector_store)
-    val USERS_TICKETS = stringResource(id = R.string.screen_tickets_selector_users_tickets)
-    val items = listOf(
-        stringResource(id = R.string.screen_tickets_selector_store),
-        stringResource(id = R.string.screen_tickets_selector_users_tickets),
-    )
+fun ListSelector(
+    selectedTicketsTab: TicketsTab,
+    onTabSelected: (TicketsTab) -> Unit
+) {
     Row(
         modifier = Modifier
             .background(
@@ -150,9 +155,9 @@ fun ListSelector(selectedTicketsTab: String, onTabSelected: (String) -> Unit) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        items.forEach { item ->
+        TicketsTab.values().forEach { item ->
             Text(
-                text = item,
+                text = stringResource(id = item.tabId),
                 modifier = Modifier
                     .drawBehind {
 

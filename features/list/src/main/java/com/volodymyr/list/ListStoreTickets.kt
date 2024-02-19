@@ -15,10 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,50 +27,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.volodymyr.data.TicketType
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
 @Composable
-fun ListStoreTickets() {
-    val REDUCED_TICKET = stringResource(id = R.string.screen_store_ticket_reduced)
-    val NORMAL_TICKET = stringResource(id = R.string.screen_store_ticket_normal)
-    var selectedTicketType by remember { mutableStateOf(REDUCED_TICKET) }
-    TicketTypeSelector(selectedTicketType = selectedTicketType) { newSelectedTicketType ->
-        selectedTicketType = newSelectedTicketType
+fun ListStoreTickets(
+    state: ListPageUiState,
+    selectedTicketsType: TicketsType,
+    viewModel: ListPageViewModel = hiltViewModel(),
+) {
+    TicketTypeSelector(selectedTicketsType = selectedTicketsType) { newTicketsType ->
+        viewModel.updateTypeState(newTicketsType = newTicketsType)
     }
-    TicketGroup(
-        title = stringResource(id = R.string.tickets_group_minutes),
-        selectedTicketType = selectedTicketType
-    )
-    Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth()
-            .background(color = MainColorScheme.onTertiary)
-    )
-    TicketGroup(
-        title = stringResource(id = R.string.tickets_group_hours),
-        selectedTicketType = selectedTicketType
-    )
-    Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth()
-            .background(color = MainColorScheme.onTertiary)
-    )
-    TicketGroup(
-        title = stringResource(id = R.string.tickets_group_grouped),
-        selectedTicketType = selectedTicketType
-    )
+    TicketsTerm.values().forEach { term ->
+        TicketGroup(
+            state = state,
+            title = stringResource(id = term.termId),
+            selectedTicketType = selectedTicketsType
+        )
+        if (term == TicketsTerm.values().last()) {
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+                    .fillMaxWidth()
+                    .background(color = MainColorScheme.onTertiary)
+            )
+        }
+    }
 }
 
 
 @Composable
-fun TicketTypeSelector(selectedTicketType: String, onTabSelected: (String) -> Unit) {
-    val items = listOf(
-        stringResource(id = R.string.screen_store_ticket_reduced),
-        stringResource(id = R.string.screen_store_ticket_normal),
-    )
+fun TicketTypeSelector(selectedTicketsType: TicketsType, onTabSelected: (TicketsType) -> Unit) {
     Spacer(modifier = Modifier.height(24.dp))
     Row(
         modifier = Modifier
@@ -82,14 +68,14 @@ fun TicketTypeSelector(selectedTicketType: String, onTabSelected: (String) -> Un
             .background(color = MainColorScheme.onTertiary),
         horizontalArrangement = Arrangement.Center
     ) {
-        items.forEach { item ->
+        TicketsType.values().forEach { item ->
             Text(
-                text = item,
+                text = stringResource(id = item.typeId),
                 modifier = Modifier
                     .padding(2.dp)
                     .clip(shape = RoundedCornerShape(24.dp))
                     .background(
-                        color = if (selectedTicketType == item) {
+                        color = if (selectedTicketsType == item) {
                             MainColorScheme.onPrimary
                         } else {
                             Color.Transparent
@@ -99,7 +85,7 @@ fun TicketTypeSelector(selectedTicketType: String, onTabSelected: (String) -> Un
                         onTabSelected(item)
                     }
                     .padding(16.dp, 8.dp, 16.dp, 8.dp),
-                color = if (selectedTicketType == item) {
+                color = if (selectedTicketsType == item) {
                     MainColorScheme.surfaceTint
                 } else {
                     MainColorScheme.surface
@@ -113,9 +99,23 @@ fun TicketTypeSelector(selectedTicketType: String, onTabSelected: (String) -> Un
 
 @Composable
 fun TicketGroup(
+    state: ListPageUiState,
     title: String,
-    selectedTicketType: String,
+    selectedTicketType: TicketsType,
 ) {
+    val storeTicketsGroup: List<TicketCard> =
+        if (selectedTicketType == TicketsType.REDUCED) {
+            state.storeTicketsReduced
+        } else {
+            state.storeTicketsRegular
+        }
+    val ticketTypeSingle: TicketType =
+        if (selectedTicketType == TicketsType.REDUCED) {
+            state.ticketTypeReduced
+        } else {
+            state.ticketTypeRegular
+        }
+    println("ticketTypeSingle = ${stringResource(id = state.ticketTypeReduced.typeId)}")
     Text(
         text = title,
         modifier = Modifier
@@ -130,46 +130,32 @@ fun TicketGroup(
             .horizontalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.width(8.dp))
-        TicketCard(
-            selectedTicketType = selectedTicketType,
-            provider = stringResource(id = R.string.ticket_provider),
-            scope = stringResource(id = R.string.ticket_scope_country),
-            time = stringResource(id = R.string.ticket_duration_20),
-            unit = stringResource(id = R.string.ticket_unit_minutes),
-            price = stringResource(id = R.string.price_reduced_minutes_lowest),
-            currency = stringResource(id = R.string.currency),
-        )
-        TicketCard(
-            selectedTicketType = selectedTicketType,
-            provider = stringResource(id = R.string.ticket_provider),
-            scope = stringResource(id = R.string.ticket_scope_country),
-            time = stringResource(id = R.string.ticket_duration_60),
-            unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
-            price = stringResource(id = R.string.price_reduced_minutes_middle),
-            currency = stringResource(id = R.string.currency),
-        )
-        TicketCard(
-            selectedTicketType = selectedTicketType,
-            provider = stringResource(id = R.string.ticket_provider),
-            scope = stringResource(id = R.string.ticket_scope_country),
-            time = stringResource(id = R.string.ticket_duration_90),
-            unit = stringResource(id = R.string.ticket_unit_minutes),
-            price = stringResource(id = R.string.price_reduced_minutes_highest),
-            currency = stringResource(id = R.string.currency),
-        )
+        storeTicketsGroup.forEach { ticket ->
+            StoreTicketCard(
+                type = ticketTypeSingle,
+                provider = ticket.provider,
+                scope = ticket.scope,
+                time = ticket.time,
+                unit = ticket.unit,
+                price = ticket.price,
+                currency = ticket.currency,
+                scopeFormat = ticket.scopeFormat
+            )
+        }
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
-fun TicketCard(
-    selectedTicketType: String,
-    provider: String,
-    scope: String,
-    time: String,
-    unit: String,
-    price: String,
-    currency: String
+fun StoreTicketCard(
+    type: TicketType,
+    provider: Int,
+    scope: Int,
+    time: Int,
+    unit: Int,
+    price: Int,
+    currency: Int,
+    scopeFormat: Int
 ) {
     Column(
         modifier = Modifier
@@ -195,13 +181,13 @@ fun TicketCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = selectedTicketType,
+                text = stringResource(id = type.typeId),
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(
-                        color = if (selectedTicketType == stringResource(id = R.string.screen_store_ticket_reduced)) {
+                        color = if (type == TicketType.REDUCED) {
                             MainColorScheme.outline
                         } else {
                             MainColorScheme.onTertiary
@@ -213,7 +199,7 @@ fun TicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = provider,
+                text = stringResource(id = provider),
                 modifier = Modifier
                     .padding(8.dp),
                 color = MainColorScheme.surface,
@@ -221,7 +207,7 @@ fun TicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = stringResource(id = R.string.ticket_scope_template, scope),
+                text = stringResource(id = scopeFormat, stringResource(id = scope)),
                 modifier = Modifier
                     .padding(8.dp),
                 color = MainColorScheme.onPrimary,
@@ -229,13 +215,13 @@ fun TicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = time,
+                text = stringResource(id = time),
                 color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
                 style = Typography.labelLarge
             )
             Text(
-                text = unit,
+                text = stringResource(id = unit),
                 modifier = Modifier
                     .padding(24.dp, 0.dp, 24.dp, 0.dp),
                 color = MainColorScheme.onPrimary,
@@ -253,10 +239,10 @@ fun TicketCard(
             textAlign = TextAlign.Left,
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle(fontSize = 24.sp)) {
-                    append(price)
+                    append(stringResource(id = price))
                 }
                 append(" ")
-                append(currency)
+                append(stringResource(id = currency))
             },
             style = Typography.labelSmall,
         )
