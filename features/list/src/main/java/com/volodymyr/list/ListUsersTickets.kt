@@ -22,92 +22,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.volodymyr.data.TicketType
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
-val date = listOf("wtorek", "16.01.2024", "11:45");
-val columnHeight = 300;
-val columnWidth = 180;
+const val columnHeight = 300;
+const val columnWidth = 180;
 
 @Composable
 fun ListUsersTickets(
+    state: ListPageUiState,
     navigator: NavigationProvider
 ) {
-    TicketCard(
-        navigator = navigator,
-        type = stringResource(id = R.string.ticket_type_reduced),
-        provider = stringResource(id = R.string.ticket_provider),
-        scope = stringResource(id = R.string.ticket_scope_country),
-        time = stringResource(id = R.string.ticket_duration_60),
-        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
-        price = stringResource(id = R.string.price_reduced_minutes_middle),
-        currency = stringResource(id = R.string.currency),
-    )
-    Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth()
-            .background(color = MainColorScheme.onTertiary)
-    )
-    TicketCard(
-        navigator = navigator,
-        type = stringResource(id = R.string.ticket_type_reduced),
-        provider = stringResource(id = R.string.ticket_provider),
-        scope = stringResource(id = R.string.ticket_scope_country),
-        time = stringResource(id = R.string.ticket_duration_60),
-        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
-        price = stringResource(id = R.string.price_reduced_minutes_middle),
-        currency = stringResource(id = R.string.currency),
-    )
-    Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth()
-            .background(color = MainColorScheme.onTertiary)
-    )
-    TicketCard(
-        navigator = navigator,
-        type = stringResource(id = R.string.ticket_type_reduced),
-        provider = stringResource(id = R.string.ticket_provider),
-        scope = stringResource(id = R.string.ticket_scope_country),
-        time = stringResource(id = R.string.ticket_duration_60),
-        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
-        price = stringResource(id = R.string.price_reduced_minutes_middle),
-        currency = stringResource(id = R.string.currency),
-    )
-    Spacer(
-        modifier = Modifier
-            .height(8.dp)
-            .fillMaxWidth()
-            .background(color = MainColorScheme.onTertiary)
-    )
-    TicketCard(
-        navigator = navigator,
-        type = stringResource(id = R.string.ticket_type_reduced),
-        provider = stringResource(id = R.string.ticket_provider),
-        scope = stringResource(id = R.string.ticket_scope_country),
-        time = stringResource(id = R.string.ticket_duration_60),
-        unit = stringResource(id = R.string.ticket_unit_minutes_or_trip),
-        price = stringResource(id = R.string.price_reduced_minutes_middle),
-        currency = stringResource(id = R.string.currency),
-    )
+    state.userTickets.forEach { ticket ->
+        UserTicketCard(
+            state = state,
+            navigator = navigator,
+            type = ticket.ticketType,
+            provider = ticket.provider,
+            scope = ticket.scope,
+            time = ticket.time,
+            unit = ticket.unit,
+            price = ticket.price,
+            currency = ticket.currency,
+            scopeFormat = ticket.scopeFormat,
+            date = ticket.date,
+        )
+    }
 }
 
 @Composable
-fun TicketCard(
+fun UserTicketCard(
+    state: ListPageUiState,
     navigator: NavigationProvider,
-    type: String,
-    provider: String,
-    scope: String,
-    time: String,
-    unit: String,
-    price: String,
-    currency: String
+    type: TicketType,
+    provider: Int,
+    scope: Int,
+    time: Int,
+    unit: Int,
+    price: Int,
+    currency: Int,
+    scopeFormat: Int,
+    date: Date,
 ) {
     Spacer(
         modifier = Modifier
@@ -115,7 +77,7 @@ fun TicketCard(
     )
     Text(
         color = MainColorScheme.surfaceTint,
-        text = date[1],
+        text = date.date,
         textAlign = TextAlign.Left,
         style = Typography.bodyMedium,
         modifier = Modifier
@@ -131,17 +93,31 @@ fun TicketCard(
         TicketShapeColumn(
             navigator = navigator,
             type = type,
-            provider = provider,
-            scope = scope,
-            time = time,
-            unit = unit
+            provider = stringResource(id = provider),
+            scope = stringResource(id = scopeFormat, stringResource(id = scope)),
+            time = stringResource(id = time),
+            unit = stringResource(id = unit),
+            ticketSubmitText = stringResource(id = state.ticketSubmitText.textId),
         )
         Spacer(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(8.dp)
         )
-        TicketDataColumn(price = price, currency = currency)
+        TicketDataColumn(
+            date = date,
+            imgCalendar = painterResource(id = state.imgCalendar.imgId),
+            imgPrice = painterResource(state.imgPrice.imgId),
+            textFrom = stringResource(id = state.ticketFromText.textId),
+            textBuyAgain = stringResource(id = state.ticketByAgainText.textId),
+            textDate = stringResource(id = state.ticketDateText.textId),
+            textSeeMore = stringResource(id = state.ticketSeeMoreText.textId),
+            priceFormatted = stringResource(
+                id = state.priceFormat.formatId,
+                stringResource(id = price),
+                stringResource(id = currency)
+            ),
+        )
     }
 }
 
@@ -156,11 +132,12 @@ fun SpacerImageSize() {
 @Composable
 fun TicketShapeColumn(
     navigator: NavigationProvider,
-    type: String,
+    type: TicketType,
     provider: String,
     scope: String,
     time: String,
-    unit: String
+    unit: String,
+    ticketSubmitText: String,
 ) {
     Column(
         modifier = Modifier
@@ -172,7 +149,7 @@ fun TicketShapeColumn(
             ),
     ) {
         Text(
-            text = type,
+            text = stringResource(id = type.typeId),
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
@@ -222,7 +199,7 @@ fun TicketShapeColumn(
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = stringResource(id = R.string.ticket_submit),
+                text = ticketSubmitText,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
@@ -242,9 +219,16 @@ fun TicketShapeColumn(
 
 
 @Composable
-fun TicketDataColumn(price: String, currency: String) {
-    val imgCalendar = painterResource(R.drawable.calendar)
-    val imgPrice = painterResource(R.drawable.price)
+fun TicketDataColumn(
+    date: Date,
+    imgCalendar: Painter,
+    imgPrice: Painter,
+    textFrom: String,
+    textDate: String,
+    textBuyAgain: String,
+    textSeeMore: String,
+    priceFormatted: String,
+) {
     Column(
         modifier = Modifier
             .height(columnHeight.dp),
@@ -258,7 +242,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             SpacerImageSize()
             Text(
-                text = stringResource(id = R.string.ticket_field_from),
+                text = textFrom,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -269,7 +253,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             Image(
                 painter = imgCalendar,
-                contentDescription = stringResource(id = R.string.ticket_date),
+                contentDescription = textDate,
                 modifier = Modifier
                     .padding(8.dp, 4.dp, 8.dp, 4.dp)
                     .size(16.dp)
@@ -279,7 +263,7 @@ fun TicketDataColumn(price: String, currency: String) {
                     .fillMaxSize(),
             )
             Text(
-                text = date[0],
+                text = date.day,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -290,7 +274,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             SpacerImageSize()
             Text(
-                text = date[1] + " " + date[2],
+                text = date.date + " " + date.time,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -311,7 +295,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             Image(
                 painter = imgPrice,
-                contentDescription = stringResource(id = R.string.ticket_date),
+                contentDescription = textDate,
                 modifier = Modifier
                     .padding(8.dp, 4.dp, 8.dp, 4.dp)
                     .size(16.dp)
@@ -321,7 +305,7 @@ fun TicketDataColumn(price: String, currency: String) {
                     .fillMaxSize(),
             )
             Text(
-                text = stringResource(R.string.price, price, currency),
+                text = priceFormatted,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -332,7 +316,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             SpacerImageSize()
             Text(
-                text = stringResource(R.string.ticket_buy_again, price, currency),
+                text = textBuyAgain,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
@@ -362,7 +346,7 @@ fun TicketDataColumn(price: String, currency: String) {
         Row {
             SpacerImageSize()
             Text(
-                text = stringResource(R.string.ticket_see_more),
+                text = textSeeMore,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),

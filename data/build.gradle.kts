@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.volodymyr.data.list"
+    namespace = "com.volodymyr.data"
     compileSdk = 34
 
     defaultConfig {

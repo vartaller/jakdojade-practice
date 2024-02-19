@@ -44,7 +44,8 @@ fun ListPage(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    val selectedTicketsTab = state.currentTicketsTab
+    val selectedTicketsTab = state.ticketsTab
+    val selectedTicketsType = state.ticketsType
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,25 +53,25 @@ fun ListPage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(
-            stringResource(id = R.string.screen_tickets_title),
+            state,
+            stringResource(id = state.screenTitle.titleId),
             balance = 4.80,
-            unit = stringResource(
-                id = R.string.currency
+            currency = stringResource(
+                id = state.currency.currencyId
             )
         )
-        ListSelector(selectedTicketsTab = selectedTicketsTab) { newIndex ->
-//            selectedTicketsTab = newIndex
-            viewModel.updateState(newIndex)
+        ListSelector(selectedTicketsTab = selectedTicketsTab) { newTicketsTab ->
+            viewModel.updateTabState(newTicketsTab = newTicketsTab)
         }
         Column(
             modifier = Modifier
                 .background(color = MainColorScheme.tertiary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (selectedTicketsTab == TicketsTab.STORE_TICKETS) {
-                ListStoreTickets()
+            if (selectedTicketsTab == TicketsTab.STORE) {
+                ListStoreTickets(state = state, selectedTicketsType = selectedTicketsType)
             } else {
-                ListUsersTickets(navigator = navigator)
+                ListUsersTickets(state = state, navigator = navigator)
             }
         }
     }
@@ -78,12 +79,17 @@ fun ListPage(
 
 @Composable
 fun Title(
+    state: ListPageUiState,
     title: String,
     balance: Double,
-    unit: String,
+    currency: String,
 ) {
-    val imgProfile = painterResource(R.drawable.profile)
-    val balanceFormatted = String.format("%.2f", balance)
+    val imgProfile = painterResource(state.imgProfile.imgId)
+    val balanceFormatted = String.format(
+        stringResource(
+            id = state.balanceFormat.formatId
+        ), balance
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,9 +111,9 @@ fun Title(
         ) {
             Text(
                 text = stringResource(
-                    id = R.string.price,
+                    id = state.priceFormat.formatId,
                     balanceFormatted,
-                    unit
+                    currency
                 ),
                 modifier = Modifier
                     .padding(8.dp)
@@ -120,7 +126,7 @@ fun Title(
             )
             Image(
                 painter = imgProfile,
-                contentDescription = stringResource(id = R.string.screen_tickets_image_profile),
+                contentDescription = stringResource(id = state.imgDescription.descriptionId),
                 modifier = Modifier
                     .padding(8.dp, 12.dp, 8.dp, 12.dp)
                     .size(20.dp)
@@ -128,7 +134,7 @@ fun Title(
                         color = Color.Transparent
                     )
                     .fillMaxSize(),
-// use to close app by clicking back
+// ------------------ use to close app by clicking back
 //                    .clickable { pressOnBack.invoke() }
             )
         }
@@ -151,7 +157,7 @@ fun ListSelector(
     ) {
         TicketsTab.values().forEach { item ->
             Text(
-                text = stringResource(id = item.tab),
+                text = stringResource(id = item.tabId),
                 modifier = Modifier
                     .drawBehind {
 

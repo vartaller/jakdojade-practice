@@ -15,13 +15,16 @@
     <string name="ticket_unit_minutes">minut</string>
 
     <!-- Ticket fields text -->
-<!--    <string name="ticket_field_from">Wazny od</string>-->
-<!--    <string name="ticket_field_to">Wazny do</string>-->
-<!--    <string name="ticket_field_phone">Numer telefonu</string>-->
-<!--    <string name="ticket_field_vehicle">Numer boczny pojazdu</string>-->
-<!--    <string name="ticket_field_price">Cena</string>-->
-<!--    <string name="ticket_field_provider">Wystawca biletu</string>-->
-<!--    <string name="ticket_field_code">Kod biletu</string>-->
+    <string name="ticket_field_from">Wazny od</string>
+    <string name="ticket_field_to">Wazny do</string>
+    <string name="ticket_field_phone">Numer telefonu</string>
+    <string name="ticket_field_vehicle">Numer boczny pojazdu</string>
+    <string name="ticket_field_price">Cena</string>
+    <string name="ticket_field_provider">Wystawca biletu</string>
+    <string name="ticket_field_code">Kod biletu</string>
+
+    <!-- Ticket fields value -->
+    <string name="ticket_provider">ZTP w Krakowie</string>
 
     <!-- Screen: purchased ticket -->
     <string name="screen_ticket_title">Ticket control</string>

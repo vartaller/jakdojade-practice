@@ -8,15 +8,29 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ListPageViewModel @Inject constructor (
+class ListPageViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ListPageUiState())
     val uiState: StateFlow<ListPageUiState> = _uiState.asStateFlow()
 
-    fun updateState(newProperty: TicketsTab) {
-//  Another way to re-write state class instance
+    fun updateTabState(
+        newTicketsTab: TicketsTab = _uiState.value.ticketsTab,
+    ) {
+//  ----- Another way to re-write state class instance
 //        val tempClass = ListPageUiState(newProperty)
 //        _uiState.value = tempClass
-        _uiState.value = _uiState.value.copy(currentTicketsTab = newProperty)
+        _uiState.value = _uiState.value.copy(
+            ticketsTab = newTicketsTab,
+        )
+    }
+    fun updateTypeState(
+        newTicketsType: TicketsType = _uiState.value.ticketsType,
+    ) {
+//  ----- Another way to re-write state class instance
+//        val tempClass = ListPageUiState(newProperty)
+//        _uiState.value = tempClass
+        _uiState.value = _uiState.value.copy(
+            ticketsType = newTicketsType,
+        )
     }
 }

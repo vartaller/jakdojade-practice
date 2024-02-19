@@ -1,4 +1,4 @@
-package com.volodymyr.data.list
+package com.volodymyr.data
 
 import org.junit.Test
 
