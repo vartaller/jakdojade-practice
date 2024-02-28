@@ -40,6 +40,23 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+//    buildscript {
+//        ext.kotlin_version = '1.5.31'
+//    }
+//    ext {
+//        activityVersion = '1.4.0'
+//        appCompatVersion = '1.4.0'
+//        constraintLayoutVersion = '2.1.2'
+//        coreTestingVersion = '2.1.0'
+//        coroutines = '1.5.2'
+//        lifecycleVersion = '2.4.0'
+//        materialVersion = '1.4.0'
+//        roomVersion = '2.3.0'
+//        // testing
+//        junitVersion = '4.13.2'
+//        espressoVersion = '3.4.0'
+//        androidxJunitVersion = '1.1.3'
+//    }
 }
 
 ksp {
@@ -57,6 +74,7 @@ android.libraryVariants.all {
 }
 
 dependencies {
+    val roomVersion = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -77,6 +95,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 
     implementation(project(mapOf("path" to ":common:ui-theme")))
 }

@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("kotlin-android")
     kotlin("kapt")
 }
 
@@ -45,7 +46,9 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.6"
     }
-
+    packagingOptions {
+        resources.excludes.add("META-INF/atomicfu.kotlin_module")
+    }
 }
 
 android.applicationVariants.all {
@@ -67,6 +70,8 @@ android.buildTypes.all {
 }
 
 dependencies {
+    implementation(project(":data"))
+    val roomVersion = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -98,6 +103,31 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.navigation:navigation-compose:2.5.3")
 
+    implementation("androidx.appcompat:appcompat:$rootProject.appCompatVersion")
+    implementation("androidx.activity:activity-ktx:$rootProject.activityVersion")
+
+    // Room components
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+    androidTestImplementation("androidx.room:room-testing:$roomVersion")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.6")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines")
+    implementation("androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion")
+    implementation("com.google.android.material:material:$rootProject.materialVersion")
+
+    testImplementation("junit:junit:$rootProject.junitVersion")
+    androidTestImplementation("androidx.arch.core:core-testing:$rootProject.coreTestingVersion")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:$rootProject.espressoVersion",
+//        {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    }
+    )
+    androidTestImplementation("androidx.test.ext:junit:$rootProject.androidxJunitVersion")
 }
 kapt {
     correctErrorTypes = true

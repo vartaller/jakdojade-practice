@@ -6,17 +6,6 @@ import androidx.activity.compose.setContent
 import com.volodymyr.myapplication.R
 import dagger.hilt.android.AndroidEntryPoint
 
-data class InfoFieldData(val title: String, val value: String)
-
-val infoFieldsData = listOf(
-    InfoFieldData("Wazny od", "16.01.2024 11:45:47"),
-    InfoFieldData("Wazny do", "16.01.2024 12:05:47"),
-    InfoFieldData("Numer telefonu", "49 765765765"),
-    InfoFieldData("Numer boczny pojazdu", "HL417"),
-    InfoFieldData("Cena", "4,00 zl"),
-    InfoFieldData("Wystawca biletu", "ZTP w Krakowie"),
-    InfoFieldData("Kod biletu", "33A52GQ9")
-)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var backPressed = 0L

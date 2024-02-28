@@ -27,10 +27,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.volodymyr.data.TicketType
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.volodymyr.data.DurationDb
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 const val columnHeight = 300;
 const val columnWidth = 180;
@@ -38,21 +43,22 @@ const val columnWidth = 180;
 @Composable
 fun ListUsersTickets(
     state: ListPageUiState,
-    navigator: NavigationProvider
+    navigator: NavigationProvider,
+    viewModel: ListPageViewModel = hiltViewModel(),
 ) {
-    state.userTickets.forEach { ticket ->
+    state.allUserTickets.forEach { ticket ->
         UserTicketCard(
             state = state,
             navigator = navigator,
-            type = ticket.ticketType,
-            provider = ticket.provider,
-            scope = ticket.scope,
-            time = ticket.time,
-            unit = ticket.unit,
-            price = ticket.price,
-            currency = ticket.currency,
-            scopeFormat = ticket.scopeFormat,
-            date = ticket.date,
+            type = ticket.type.type,
+            provider = ticket.provider.type,
+            scope = ticket.scope.type,
+            unit = ticket.unit.type,
+            price = ticket.price.type,
+            currency = R.string.currency_pln,
+            scopeFormat = R.string.ticket_scope_format,
+            duration = ticket.duration,
+            dateStamp = ticket.dateStamp,
         )
     }
 }
@@ -61,23 +67,35 @@ fun ListUsersTickets(
 fun UserTicketCard(
     state: ListPageUiState,
     navigator: NavigationProvider,
-    type: TicketType,
-    provider: Int,
-    scope: Int,
-    time: Int,
-    unit: Int,
-    price: Int,
+    type: String,
+    provider: String,
+    scope: String,
+    unit: String,
+    price: Double,
     currency: Int,
     scopeFormat: Int,
-    date: Date,
+    duration: DurationDb,
+    dateStamp: Date,
 ) {
+
+    val calendar = Calendar.getInstance()
+    calendar.time = dateStamp
+    val hours = calendar.get(Calendar.HOUR_OF_DAY)
+    val minutes = calendar.get(Calendar.MINUTE)
+    val seconds = calendar.get(Calendar.SECOND)
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val sdf = SimpleDateFormat("EEEE", Locale.ENGLISH)
+    val dayName = sdf.format(dateStamp)
+
     Spacer(
         modifier = Modifier
             .height(16.dp)
     )
     Text(
         color = MainColorScheme.surfaceTint,
-        text = date.date,
+        text = "$year.$month.$day",
         textAlign = TextAlign.Left,
         style = Typography.bodyMedium,
         modifier = Modifier
@@ -93,11 +111,11 @@ fun UserTicketCard(
         TicketShapeColumn(
             navigator = navigator,
             type = type,
-            provider = stringResource(id = provider),
-            scope = stringResource(id = scopeFormat, stringResource(id = scope)),
-            time = stringResource(id = time),
-            unit = stringResource(id = unit),
-            ticketSubmitText = stringResource(id = state.ticketSubmitText.textId),
+            provider = provider,
+            scope = stringResource(id = scopeFormat, scope),
+            duration = duration.type,
+            unit = unit,
+            ticketSubmitText = stringResource(id = R.string.ticket_submit),
         )
         Spacer(
             modifier = Modifier
@@ -105,16 +123,18 @@ fun UserTicketCard(
                 .width(8.dp)
         )
         TicketDataColumn(
-            date = date,
-            imgCalendar = painterResource(id = state.imgCalendar.imgId),
-            imgPrice = painterResource(state.imgPrice.imgId),
-            textFrom = stringResource(id = state.ticketFromText.textId),
-            textBuyAgain = stringResource(id = state.ticketByAgainText.textId),
-            textDate = stringResource(id = state.ticketDateText.textId),
-            textSeeMore = stringResource(id = state.ticketSeeMoreText.textId),
+            time = "$hours:$minutes:$seconds",
+            day = dayName,
+            date = "$year.$month.$day",
+            imgCalendar = painterResource(id = R.drawable.calendar),
+            imgPrice = painterResource(id = R.drawable.price),
+            textFrom = stringResource(id = R.string.ticket_field_from),
+            textBuyAgain = stringResource(id = R.string.ticket_buy_again),
+            textDate = stringResource(id = R.string.ticket_date),
+            textSeeMore = stringResource(id = R.string.ticket_see_more),
             priceFormatted = stringResource(
-                id = state.priceFormat.formatId,
-                stringResource(id = price),
+                id = R.string.price_format,
+                price,
                 stringResource(id = currency)
             ),
         )
@@ -132,10 +152,10 @@ fun SpacerImageSize() {
 @Composable
 fun TicketShapeColumn(
     navigator: NavigationProvider,
-    type: TicketType,
+    type: String,
     provider: String,
     scope: String,
-    time: String,
+    duration: String,
     unit: String,
     ticketSubmitText: String,
 ) {
@@ -149,7 +169,7 @@ fun TicketShapeColumn(
             ),
     ) {
         Text(
-            text = stringResource(id = type.typeId),
+            text = type,
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
@@ -181,7 +201,7 @@ fun TicketShapeColumn(
             style = Typography.bodySmall,
         )
         Text(
-            text = time,
+            text = duration,
             modifier = Modifier.fillMaxWidth(),
             color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
@@ -220,7 +240,9 @@ fun TicketShapeColumn(
 
 @Composable
 fun TicketDataColumn(
-    date: Date,
+    time: String,
+    day: String,
+    date: String,
     imgCalendar: Painter,
     imgPrice: Painter,
     textFrom: String,
@@ -263,7 +285,7 @@ fun TicketDataColumn(
                     .fillMaxSize(),
             )
             Text(
-                text = date.day,
+                text = day,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -274,7 +296,7 @@ fun TicketDataColumn(
         Row {
             SpacerImageSize()
             Text(
-                text = date.date + " " + date.time,
+                text = "$date $time",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),

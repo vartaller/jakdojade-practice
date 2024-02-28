@@ -44,20 +44,21 @@ fun ListPage(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    val selectedTicketsTab = state.ticketsTab
-    val selectedTicketsType = state.ticketsType
+    val selectedTicketsTab = state.ticketsTab.tabId
+    val selectedTicketsType = state.ticketsType.typeId
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .background(color = MainColorScheme.tertiary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(
             state,
-            stringResource(id = state.screenTitle.titleId),
+            stringResource(id = R.string.screen_tickets_title),
             balance = 4.80,
             currency = stringResource(
-                id = state.currency.currencyId
+                id = R.string.currency_pln
             )
         )
         ListSelector(selectedTicketsTab = selectedTicketsTab) { newTicketsTab ->
@@ -68,7 +69,7 @@ fun ListPage(
                 .background(color = MainColorScheme.tertiary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (selectedTicketsTab == TicketsTab.STORE) {
+            if (selectedTicketsTab == TicketsTab.STORE.tabId) {
                 ListStoreTickets(state = state, selectedTicketsType = selectedTicketsType)
             } else {
                 ListUsersTickets(state = state, navigator = navigator)
@@ -84,10 +85,10 @@ fun Title(
     balance: Double,
     currency: String,
 ) {
-    val imgProfile = painterResource(state.imgProfile.imgId)
+    val imgProfile = painterResource(R.drawable.profile)
     val balanceFormatted = String.format(
         stringResource(
-            id = state.balanceFormat.formatId
+            id = R.string.balance_format
         ), balance
     )
     Box(
@@ -111,7 +112,7 @@ fun Title(
         ) {
             Text(
                 text = stringResource(
-                    id = state.priceFormat.formatId,
+                    id = R.string.price_format,
                     balanceFormatted,
                     currency
                 ),
@@ -126,7 +127,7 @@ fun Title(
             )
             Image(
                 painter = imgProfile,
-                contentDescription = stringResource(id = state.imgDescription.descriptionId),
+                contentDescription = stringResource(id = R.string.screen_tickets_image_profile),
                 modifier = Modifier
                     .padding(8.dp, 12.dp, 8.dp, 12.dp)
                     .size(20.dp)
@@ -143,7 +144,7 @@ fun Title(
 
 @Composable
 fun ListSelector(
-    selectedTicketsTab: TicketsTab,
+    selectedTicketsTab: Int,
     onTabSelected: (TicketsTab) -> Unit
 ) {
     Row(
@@ -165,7 +166,7 @@ fun ListSelector(
                         val y = size.height - strokeWidth
 
                         drawLine(
-                            color = if (selectedTicketsTab == item) {
+                            color = if (selectedTicketsTab == item.tabId) {
                                 MainColorScheme.outline
                             } else {
                                 Color.Transparent
@@ -179,7 +180,7 @@ fun ListSelector(
                     .clickable {
                         onTabSelected(item)
                     },
-                color = if (selectedTicketsTab == item) {
+                color = if (selectedTicketsTab == item.tabId) {
                     MainColorScheme.outline
                 } else {
                     Color.Gray
