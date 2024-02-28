@@ -60,9 +60,9 @@ fun TicketPage(
                 .padding(12.dp)
         ) {
             Title(
-                img = painterResource(id = state.imgArrowBackId.imgId),
-                title = stringResource(id = state.screenTitle.titleId),
-                textBack = stringResource(id = state.textBack.textId),
+                img = painterResource(id = R.drawable.arrow_back),
+                title = stringResource(id = R.string.screen_ticket_title),
+                textBack = stringResource(id = R.string.screen_ticket_image_arrow_back),
                 pressOnBack = {
                     navigator.navigateUp()
                 },
@@ -85,10 +85,10 @@ fun TicketPage(
             item {
                 QrCode(
                     isActive = false,
-                    textTicketActive = stringResource(id = state.textTicketActive.textId),
-                    textTicketInactive = stringResource(id = state.textTicketInactive.textId),
-                    textQrDescription = stringResource(id = state.textQrDescription.textId),
-                    textQrScale = stringResource(id = state.textQrScale.textId),
+                    textTicketActive = stringResource(id = R.string.ticket_status_active),
+                    textTicketInactive = stringResource(id = R.string.ticket_status_inactive),
+                    textQrDescription = stringResource(id = R.string.screen_ticket_image_qr),
+                    textQrScale = stringResource(id = R.string.screen_ticket_qr_scale),
                 )
             }
             item { Spacer(modifier = Modifier.height(12.dp)) }

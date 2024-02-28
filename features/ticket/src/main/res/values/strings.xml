@@ -26,6 +26,10 @@
     <!-- Ticket fields value -->
     <string name="ticket_provider">ZTP w Krakowie</string>
 
+    <!-- Screen: ticket type -->
+    <string name="screen_store_ticket_reduced">Льготный</string>
+    <string name="screen_store_ticket_regular">Обычный</string>
+
     <!-- Screen: purchased ticket -->
     <string name="screen_ticket_title">Ticket control</string>
     <string name="screen_ticket_qr_scale">Нажми, чтобы увеличить</string>

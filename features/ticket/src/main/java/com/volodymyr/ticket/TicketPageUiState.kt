@@ -1,22 +1,14 @@
 package com.volodymyr.ticket
 
-import com.volodymyr.data.ScreenTitle
 import com.volodymyr.data.TicketType
 
 data class TicketPageUiState(
-    val screenTitle: ScreenTitle = ScreenTitle.TICKET,
     val ticketType: TicketType = TicketType.REDUCED,
     val ticketValues: List<TicketDataModel> = emptyList(),
     val ticketTime: String = "",
     val ticketScope: String = "",
     val ticketTimeUnit: String = "",
-    val imgArrowBackId: ImgArrowBack = ImgArrowBack.REGULAR,
-    val textBack: TextBack = TextBack.RU,
     val textScopeFormat: TextScopeFormat = TextScopeFormat.PL,
-    val textTicketActive: TextTicketActive = TextTicketActive.RU,
-    val textTicketInactive: TextTicketInactive = TextTicketInactive.RU,
-    val textQrDescription: TextQrCodeDescription = TextQrCodeDescription.EN,
-    val textQrScale: TextQrCodeScale = TextQrCodeScale.RU,
 )
 data class TicketDataModel(val title: TicketDataFieldNames, val value: String)
 
@@ -46,30 +38,6 @@ data class TicketDataValues(
     val scope: String = "I+II+III",
 )
 
-enum class ImgArrowBack(val imgId: Int) {
-    REGULAR(R.drawable.arrow_back),
-}
-
-enum class TextBack(val textId: Int) {
-    RU(R.string.screen_ticket_image_arrow_back),
-}
-
 enum class TextScopeFormat(val textId: Int) {
     PL(R.string.ticket_domain),
-}
-
-enum class TextTicketActive(val textId: Int) {
-    RU(R.string.ticket_status_active),
-}
-
-enum class TextTicketInactive(val textId: Int) {
-    RU(R.string.ticket_status_inactive),
-}
-
-enum class TextQrCodeDescription(val textId: Int) {
-    EN(R.string.screen_ticket_image_qr),
-}
-
-enum class TextQrCodeScale(val textId: Int) {
-    RU(R.string.screen_ticket_qr_scale),
 }

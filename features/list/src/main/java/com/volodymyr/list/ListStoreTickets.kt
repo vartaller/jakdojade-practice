@@ -28,14 +28,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.volodymyr.data.TicketType
+import com.volodymyr.data.R
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
 @Composable
 fun ListStoreTickets(
     state: ListPageUiState,
-    selectedTicketsType: TicketsType,
+    selectedTicketsType: Int,
     viewModel: ListPageViewModel = hiltViewModel(),
 ) {
     TicketTypeSelector(selectedTicketsType = selectedTicketsType) { newTicketsType ->
@@ -60,7 +60,7 @@ fun ListStoreTickets(
 
 
 @Composable
-fun TicketTypeSelector(selectedTicketsType: TicketsType, onTabSelected: (TicketsType) -> Unit) {
+fun TicketTypeSelector(selectedTicketsType: Int, onTabSelected: (TicketsType) -> Unit) {
     Spacer(modifier = Modifier.height(24.dp))
     Row(
         modifier = Modifier
@@ -75,7 +75,7 @@ fun TicketTypeSelector(selectedTicketsType: TicketsType, onTabSelected: (Tickets
                     .padding(2.dp)
                     .clip(shape = RoundedCornerShape(24.dp))
                     .background(
-                        color = if (selectedTicketsType == item) {
+                        color = if (selectedTicketsType == item.typeId) {
                             MainColorScheme.onPrimary
                         } else {
                             Color.Transparent
@@ -85,7 +85,7 @@ fun TicketTypeSelector(selectedTicketsType: TicketsType, onTabSelected: (Tickets
                         onTabSelected(item)
                     }
                     .padding(16.dp, 8.dp, 16.dp, 8.dp),
-                color = if (selectedTicketsType == item) {
+                color = if (selectedTicketsType == item.typeId) {
                     MainColorScheme.surfaceTint
                 } else {
                     MainColorScheme.surface
@@ -101,21 +101,20 @@ fun TicketTypeSelector(selectedTicketsType: TicketsType, onTabSelected: (Tickets
 fun TicketGroup(
     state: ListPageUiState,
     title: String,
-    selectedTicketType: TicketsType,
+    selectedTicketType: Int,
 ) {
     val storeTicketsGroup: List<TicketCard> =
-        if (selectedTicketType == TicketsType.REDUCED) {
+        if (selectedTicketType == R.string.screen_store_tickets_reduced) {
             state.storeTicketsReduced
         } else {
             state.storeTicketsRegular
         }
-    val ticketTypeSingle: TicketType =
-        if (selectedTicketType == TicketsType.REDUCED) {
-            state.ticketTypeReduced
+    val ticketTypeSingle: Int =
+        if (selectedTicketType == R.string.screen_store_tickets_reduced) {
+            R.string.screen_store_ticket_reduced
         } else {
-            state.ticketTypeRegular
+            R.string.screen_store_ticket_regular
         }
-    println("ticketTypeSingle = ${stringResource(id = state.ticketTypeReduced.typeId)}")
     Text(
         text = title,
         modifier = Modifier
@@ -148,7 +147,7 @@ fun TicketGroup(
 
 @Composable
 fun StoreTicketCard(
-    type: TicketType,
+    type: Int,
     provider: Int,
     scope: Int,
     time: Int,
@@ -181,13 +180,13 @@ fun StoreTicketCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(id = type.typeId),
+                text = stringResource(id = type),
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(
-                        color = if (type == TicketType.REDUCED) {
+                        color = if (type == R.string.screen_store_ticket_reduced) {
                             MainColorScheme.outline
                         } else {
                             MainColorScheme.onTertiary

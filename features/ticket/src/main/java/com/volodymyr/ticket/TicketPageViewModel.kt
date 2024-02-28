@@ -20,6 +20,7 @@ class TicketPageViewModel @Inject constructor(
     private fun fetchData() {
         val inputData = TicketDataValues()
         val outputData = mutableListOf<TicketDataModel>()
+//        TicketDataFieldNames.values().forEach {
         TicketDataFieldNames.values().forEach {
             outputData.add(
                 TicketDataModel(
