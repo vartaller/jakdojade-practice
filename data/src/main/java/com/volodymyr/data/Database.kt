@@ -14,11 +14,11 @@ import java.util.Date
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @TypeConverters(Converters::class)
 @Database(entities = [UserTicket::class], version = 1, exportSchema = false)
-public abstract class UserTicketDatabase : RoomDatabase() {
+public abstract class DatabaseApp : RoomDatabase() {
 
-    abstract fun usersTicketDao(): UserTicketDao
+    abstract fun dao(): Dao
 
-    private class UserTicketDatabaseCallback(
+    private class DatabaseAppCallback(
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -26,17 +26,17 @@ public abstract class UserTicketDatabase : RoomDatabase() {
             super.onCreate(db)
             INSTANCE?.let { database ->
                 scope.launch {
-                    populateDatabase(database.usersTicketDao())
+                    populateDatabase(database.dao())
                 }
             }
         }
 
-        suspend fun populateDatabase(usersTicketDao: UserTicketDao) {
-            usersTicketDao.deleteAll()
+        suspend fun populateDatabase(usersTicketDao: Dao) {
+            usersTicketDao.deleteAllUserTickets()
             val samplesList = sampleData()
             println("samplesList = $samplesList")
             samplesList.forEach {
-                usersTicketDao.insert(it)
+                usersTicketDao.insertUserTicket(it)
             }
         }
     }
@@ -44,20 +44,20 @@ public abstract class UserTicketDatabase : RoomDatabase() {
     companion object {
         // Singleton prevents multiple instances of database opening at the same time.
         @Volatile
-        private var INSTANCE: UserTicketDatabase? = null
+        private var INSTANCE: DatabaseApp? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): UserTicketDatabase {
+        ): DatabaseApp {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    UserTicketDatabase::class.java,
+                    DatabaseApp::class.java,
                     "my_app_database",
-                ).addCallback(UserTicketDatabaseCallback(scope)).build()
+                ).addCallback(DatabaseAppCallback(scope)).build()
                 INSTANCE = instance
                 // return instance
                 instance

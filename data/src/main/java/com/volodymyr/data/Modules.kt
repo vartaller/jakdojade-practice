@@ -15,8 +15,8 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Singleton
     @Provides
-    fun provideUserTicketRepository(usersTicketDao: UserTicketDao): UserTicketRepository {
-        return UserTicketRepositoryImpl(usersTicketDao)
+    fun provideRepository(dao: Dao): Repository {
+        return RepositoryImpl(dao)
     }
 
 }
@@ -26,8 +26,8 @@ object RepositoryModule {
 object DaoModule {
     @Singleton
     @Provides
-    fun provideUserTicketDao(roomDatabase: UserTicketDatabase): UserTicketDao {
-        return roomDatabase.usersTicketDao()
+    fun provideDao(roomDatabase: DatabaseApp): Dao {
+        return roomDatabase.dao()
     }
 }
 
@@ -36,7 +36,7 @@ object DaoModule {
 object DatabaseModule  {
     @Singleton
     @Provides
-    fun provideRoomDatabase(@ApplicationContext context: Context): UserTicketDatabase {
-        return UserTicketDatabase.getDatabase(context = context, scope = CoroutineScope(SupervisorJob()))
+    fun provideRoomDatabase(@ApplicationContext context: Context): DatabaseApp {
+        return DatabaseApp.getDatabase(context = context, scope = CoroutineScope(SupervisorJob()))
     }
 }

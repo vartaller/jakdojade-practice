@@ -2,8 +2,8 @@ package com.volodymyr.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.volodymyr.data.Repository
 import com.volodymyr.data.UserTicket
-import com.volodymyr.data.UserTicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListPageViewModel @Inject constructor(
-    private val repository: UserTicketRepository
+    private val repository: Repository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ListPageUiState())
     val uiState: StateFlow<ListPageUiState> = _uiState.asStateFlow()
@@ -32,8 +32,8 @@ class ListPageViewModel @Inject constructor(
         }
     }
 
-    fun insert(userTicket: UserTicket) = viewModelScope.launch {
-        repository.insert(userTicket)
+    fun insertUserTicket(userTicket: UserTicket) = viewModelScope.launch {
+        repository.insertUserTicket(userTicket)
     }
 
     fun updateTabState(
