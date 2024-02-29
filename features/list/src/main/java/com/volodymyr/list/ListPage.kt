@@ -50,7 +50,7 @@ fun ListPage(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(color = MainColorScheme.tertiary),
+            .background(color = MainColorScheme.onTertiary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(

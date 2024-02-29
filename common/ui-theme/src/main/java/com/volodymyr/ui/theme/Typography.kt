@@ -27,6 +27,10 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontSize = 18.sp,
     ),
+    titleSmall = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 12.sp
+    ),
     titleMedium = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp
@@ -35,14 +39,22 @@ val Typography = Typography(
         fontWeight = FontWeight.W500,
         fontSize = 80.sp
     ),
+    labelMedium = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 60.sp
+    ),
     labelSmall = TextStyle(
         fontWeight = FontWeight.W500,
-        fontSize = 12.sp
+        fontSize = 40.sp,
     ),
     displaySmall = TextStyle(
         fontSize = 8.sp, letterSpacing = 2.sp
     ),
     displayMedium = TextStyle(
         fontSize = 28.sp, fontWeight = FontWeight.Bold
+    ),
+    displayLarge = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 25.sp,
     )
 )

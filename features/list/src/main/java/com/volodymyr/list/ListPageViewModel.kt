@@ -30,6 +30,25 @@ class ListPageViewModel @Inject constructor(
                 )
             }
         }
+        viewModelScope.launch {
+            repository.allStoreTickets.collect {
+                _uiState.value = _uiState.value.copy(
+                    allStoreTickets = it
+                )
+            }
+        }
+    }
+
+    fun dropTableUserTickets(){
+        viewModelScope.launch {
+            repository.dropTableUsersTicket()
+        }
+    }
+
+    fun populateTableStoreTicket(){
+        viewModelScope.launch {
+            repository.populateTableStoreTicket()
+        }
     }
 
     fun insertUserTicket(userTicket: UserTicket) = viewModelScope.launch {

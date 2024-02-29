@@ -11,9 +11,16 @@ interface Dao {
     @Query("SELECT * FROM users_ticket ORDER BY dateStamp DESC")
     fun getUserTickets(): Flow<List<UserTicket>>
 
+    @Query("SELECT * FROM store_ticket")
+    fun getStoreTickets(): Flow<List<StoreTicket>>
+
     @Insert()
     suspend fun insertUserTicket(ticket: UserTicket)
+    @Insert()
+    suspend fun insertStoreTicket(ticket: StoreTicket)
 
     @Query("DELETE FROM users_ticket")
-    suspend fun deleteAllUserTickets()
+    suspend fun dropTableUsersTicket()
+    @Query("DELETE FROM store_ticket")
+    suspend fun dropTableStoreTicket()
 }

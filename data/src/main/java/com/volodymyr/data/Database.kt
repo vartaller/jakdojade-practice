@@ -1,6 +1,7 @@
 package com.volodymyr.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -13,7 +14,13 @@ import java.util.Date
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @TypeConverters(Converters::class)
-@Database(entities = [UserTicket::class], version = 1, exportSchema = false)
+@Database(
+    entities = [UserTicket::class, StoreTicket::class],
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ],
+    version = 2, exportSchema = true
+)
 public abstract class DatabaseApp : RoomDatabase() {
 
     abstract fun dao(): Dao
@@ -31,12 +38,10 @@ public abstract class DatabaseApp : RoomDatabase() {
             }
         }
 
-        suspend fun populateDatabase(usersTicketDao: Dao) {
-            usersTicketDao.deleteAllUserTickets()
-            val samplesList = sampleData()
-            println("samplesList = $samplesList")
-            samplesList.forEach {
-                usersTicketDao.insertUserTicket(it)
+        suspend fun populateDatabase(dao: Dao) {
+            val sampleStoreTicketsList = sampleStoreTicketsData()
+            sampleStoreTicketsList.forEach {
+                dao.insertStoreTicket(it)
             }
         }
     }

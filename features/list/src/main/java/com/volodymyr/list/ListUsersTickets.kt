@@ -46,6 +46,36 @@ fun ListUsersTickets(
     navigator: NavigationProvider,
     viewModel: ListPageViewModel = hiltViewModel(),
 ) {
+//    Text(
+//        text = "drop user tickets table",
+//        modifier = Modifier
+//            .padding(4.dp)
+//            .fillMaxWidth()
+//            .clip(shape = RoundedCornerShape(8.dp))
+//            .background(color = MainColorScheme.onTertiary)
+//            .padding(8.dp)
+//            .clickable {
+//                viewModel.dropTableUserTickets()
+//            },
+//        color = MainColorScheme.surfaceTint,
+//        textAlign = TextAlign.Center,
+//        style = Typography.headlineSmall,
+//    )
+//    Text(
+//        text = "populate store tickets table",
+//        modifier = Modifier
+//            .padding(4.dp)
+//            .fillMaxWidth()
+//            .clip(shape = RoundedCornerShape(8.dp))
+//            .background(color = MainColorScheme.onTertiary)
+//            .padding(8.dp)
+//            .clickable {
+//                viewModel.populateTableStoreTicket()
+//            },
+//        color = MainColorScheme.surfaceTint,
+//        textAlign = TextAlign.Center,
+//        style = Typography.headlineSmall,
+//    )
     state.allUserTickets.forEach { ticket ->
         UserTicketCard(
             state = state,
@@ -71,7 +101,7 @@ fun UserTicketCard(
     provider: String,
     scope: String,
     unit: String,
-    price: Double,
+    price: String,
     currency: Int,
     scopeFormat: Int,
     duration: DurationDb,

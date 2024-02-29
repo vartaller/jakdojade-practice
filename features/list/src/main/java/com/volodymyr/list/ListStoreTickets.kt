@@ -28,7 +28,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.volodymyr.data.DurationDb
 import com.volodymyr.data.R
+import com.volodymyr.data.StoreTicket
+import com.volodymyr.data.TicketTypeDb
+import com.volodymyr.data.TicketsTermGroup
+import com.volodymyr.data.UnitDb
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
@@ -41,13 +46,13 @@ fun ListStoreTickets(
     TicketTypeSelector(selectedTicketsType = selectedTicketsType) { newTicketsType ->
         viewModel.updateTypeState(newTicketsType = newTicketsType)
     }
-    TicketsTerm.values().forEach { term ->
+    TicketsTermGroup.values().forEach { term ->
         TicketGroup(
             state = state,
             title = stringResource(id = term.termId),
             selectedTicketType = selectedTicketsType
         )
-        if (term == TicketsTerm.values().last()) {
+        if (term == TicketsTermGroup.values().last()) {
             Spacer(
                 modifier = Modifier
                     .height(8.dp)
@@ -103,11 +108,17 @@ fun TicketGroup(
     title: String,
     selectedTicketType: Int,
 ) {
-    val storeTicketsGroup: List<TicketCard> =
+    val storeTicketsGroup: List<StoreTicket> =
         if (selectedTicketType == R.string.screen_store_tickets_reduced) {
-            state.storeTicketsReduced
+            state.allStoreTickets.filter {
+                it.type == TicketTypeDb.REDUCED &&
+                        stringResource(id = it.termGroup.termId) == title
+            }
         } else {
-            state.storeTicketsRegular
+            state.allStoreTickets.filter {
+                it.type == TicketTypeDb.REGULAR &&
+                        stringResource(id = it.termGroup.termId) == title
+            }
         }
     val ticketTypeSingle: Int =
         if (selectedTicketType == R.string.screen_store_tickets_reduced) {
@@ -126,19 +137,22 @@ fun TicketGroup(
     )
     Row(
         modifier = Modifier
-            .horizontalScroll(rememberScrollState())
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.Start
     ) {
         Spacer(modifier = Modifier.width(8.dp))
         storeTicketsGroup.forEach { ticket ->
             StoreTicketCard(
                 type = ticketTypeSingle,
-                provider = ticket.provider,
-                scope = ticket.scope,
-                time = ticket.time,
-                unit = ticket.unit,
-                price = ticket.price,
-                currency = ticket.currency,
-                scopeFormat = ticket.scopeFormat
+                provider = ticket.provider.type,
+                scope = ticket.scope.type,
+                time = ticket.duration.type,
+                unit = ticket.unit.type,
+                price = ticket.price.type,
+                currency = R.string.currency_pln,
+                scopeFormat = R.string.ticket_scope_format,
+                group = title
             )
         }
     }
@@ -148,13 +162,14 @@ fun TicketGroup(
 @Composable
 fun StoreTicketCard(
     type: Int,
-    provider: Int,
-    scope: Int,
-    time: Int,
-    unit: Int,
-    price: Int,
+    provider: String,
+    scope: String,
+    time: String,
+    unit: String,
+    price: String,
     currency: Int,
-    scopeFormat: Int
+    scopeFormat: Int,
+    group: String,
 ) {
     Column(
         modifier = Modifier
@@ -177,7 +192,8 @@ fun StoreTicketCard(
                 )
                 .clip(shape = RoundedCornerShape(12.dp))
                 .background(color = MainColorScheme.primary),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = stringResource(id = type),
@@ -198,7 +214,7 @@ fun StoreTicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = stringResource(id = provider),
+                text = provider,
                 modifier = Modifier
                     .padding(8.dp),
                 color = MainColorScheme.surface,
@@ -206,7 +222,7 @@ fun StoreTicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = stringResource(id = scopeFormat, stringResource(id = scope)),
+                text = stringResource(id = scopeFormat, scope),
                 modifier = Modifier
                     .padding(8.dp),
                 color = MainColorScheme.onPrimary,
@@ -214,20 +230,34 @@ fun StoreTicketCard(
                 style = Typography.bodySmall,
             )
             Text(
-                text = stringResource(id = time),
+                text = time,
                 color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
-                style = Typography.labelLarge
+                style = if (
+                    unit == UnitDb.GROUP_TRIP.type
+                ) {
+                    Typography.labelSmall
+                } else if (
+                    time == DurationDb.WEEKEND.type
+                ) {
+                    Typography.displayLarge
+                } else if (
+                    unit == UnitDb.MINUTE_OR_TRIP.type
+                ){
+                    Typography.labelMedium
+                } else {
+                    Typography.labelLarge
+                }
             )
             Text(
-                text = stringResource(id = unit),
+                text = unit,
                 modifier = Modifier
                     .padding(24.dp, 0.dp, 24.dp, 0.dp),
                 color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
                 style = Typography.bodyMedium,
             )
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -238,12 +268,12 @@ fun StoreTicketCard(
             textAlign = TextAlign.Left,
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle(fontSize = 24.sp)) {
-                    append(stringResource(id = price))
+                    append(price)
                 }
                 append(" ")
                 append(stringResource(id = currency))
             },
-            style = Typography.labelSmall,
+            style = Typography.titleSmall,
         )
     }
 }
