@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,19 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.volodymyr.data.DurationDb
+import com.volodymyr.data.UnitDb
+import com.volodymyr.data.UserTicket
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 const val columnHeight = 300;
@@ -46,78 +45,32 @@ fun ListUsersTickets(
     navigator: NavigationProvider,
     viewModel: ListPageViewModel = hiltViewModel(),
 ) {
-//    Text(
-//        text = "drop user tickets table",
-//        modifier = Modifier
-//            .padding(4.dp)
-//            .fillMaxWidth()
-//            .clip(shape = RoundedCornerShape(8.dp))
-//            .background(color = MainColorScheme.onTertiary)
-//            .padding(8.dp)
-//            .clickable {
-//                viewModel.dropTableUserTickets()
-//            },
-//        color = MainColorScheme.surfaceTint,
-//        textAlign = TextAlign.Center,
-//        style = Typography.headlineSmall,
-//    )
-//    Text(
-//        text = "populate store tickets table",
-//        modifier = Modifier
-//            .padding(4.dp)
-//            .fillMaxWidth()
-//            .clip(shape = RoundedCornerShape(8.dp))
-//            .background(color = MainColorScheme.onTertiary)
-//            .padding(8.dp)
-//            .clickable {
-//                viewModel.populateTableStoreTicket()
-//            },
-//        color = MainColorScheme.surfaceTint,
-//        textAlign = TextAlign.Center,
-//        style = Typography.headlineSmall,
-//    )
     state.allUserTickets.forEach { ticket ->
         UserTicketCard(
-            state = state,
+            viewModel = viewModel,
             navigator = navigator,
-            type = ticket.type.type,
-            provider = ticket.provider.type,
-            scope = ticket.scope.type,
-            unit = ticket.unit.type,
-            price = ticket.price.type,
-            currency = R.string.currency_pln,
-            scopeFormat = R.string.ticket_scope_format,
-            duration = ticket.duration,
-            dateStamp = ticket.dateStamp,
+            ticket = ticket,
         )
     }
 }
 
 @Composable
 fun UserTicketCard(
-    state: ListPageUiState,
+    ticket: UserTicket,
+    viewModel: ListPageViewModel,
     navigator: NavigationProvider,
-    type: String,
-    provider: String,
-    scope: String,
-    unit: String,
-    price: String,
-    currency: Int,
-    scopeFormat: Int,
-    duration: DurationDb,
-    dateStamp: Date,
 ) {
 
     val calendar = Calendar.getInstance()
-    calendar.time = dateStamp
-    val hours = calendar.get(Calendar.HOUR_OF_DAY)
-    val minutes = calendar.get(Calendar.MINUTE)
-    val seconds = calendar.get(Calendar.SECOND)
+    calendar.time = ticket.dateStamp
+    val seconds = calendar.get(Calendar.SECOND).toString().padStart(2, '0')
+    val minutes = calendar.get(Calendar.MINUTE).toString().padStart(2, '0')
+    val hours = calendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
+    val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0')
+    val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0')
     val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH) + 1
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
     val sdf = SimpleDateFormat("EEEE", Locale.ENGLISH)
-    val dayName = sdf.format(dateStamp)
+    val dayName = sdf.format(ticket.dateStamp)
 
     Spacer(
         modifier = Modifier
@@ -140,12 +93,7 @@ fun UserTicketCard(
     ) {
         TicketShapeColumn(
             navigator = navigator,
-            type = type,
-            provider = provider,
-            scope = stringResource(id = scopeFormat, scope),
-            duration = duration.type,
-            unit = unit,
-            ticketSubmitText = stringResource(id = R.string.ticket_submit),
+            ticket = ticket,
         )
         Spacer(
             modifier = Modifier
@@ -153,20 +101,11 @@ fun UserTicketCard(
                 .width(8.dp)
         )
         TicketDataColumn(
+            viewModel = viewModel,
+            ticket = ticket,
             time = "$hours:$minutes:$seconds",
             day = dayName,
             date = "$year.$month.$day",
-            imgCalendar = painterResource(id = R.drawable.calendar),
-            imgPrice = painterResource(id = R.drawable.price),
-            textFrom = stringResource(id = R.string.ticket_field_from),
-            textBuyAgain = stringResource(id = R.string.ticket_buy_again),
-            textDate = stringResource(id = R.string.ticket_date),
-            textSeeMore = stringResource(id = R.string.ticket_see_more),
-            priceFormatted = stringResource(
-                id = R.string.price_format,
-                price,
-                stringResource(id = currency)
-            ),
         )
     }
 }
@@ -182,12 +121,7 @@ fun SpacerImageSize() {
 @Composable
 fun TicketShapeColumn(
     navigator: NavigationProvider,
-    type: String,
-    provider: String,
-    scope: String,
-    duration: String,
-    unit: String,
-    ticketSubmitText: String,
+    ticket: UserTicket,
 ) {
     Column(
         modifier = Modifier
@@ -197,9 +131,10 @@ fun TicketShapeColumn(
             .background(
                 color = MainColorScheme.surface
             ),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = type,
+            text = ticket.type.type,
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
@@ -211,17 +146,17 @@ fun TicketShapeColumn(
             style = Typography.bodySmall,
         )
         Text(
-            text = provider,
+            text = ticket.provider.type,
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
                 .padding(4.dp),
-            color = MainColorScheme.surface,
+            color = MainColorScheme.onSurface,
             textAlign = TextAlign.Center,
             style = Typography.bodySmall,
         )
         Text(
-            text = scope,
+            text = stringResource(id = R.string.ticket_scope_format, ticket.scope),
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
@@ -231,55 +166,54 @@ fun TicketShapeColumn(
             style = Typography.bodySmall,
         )
         Text(
-            text = duration,
+            text = ticket.duration.type,
             modifier = Modifier.fillMaxWidth(),
             color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
-            style = Typography.labelLarge,
+            style = if (ticket.unit.type == UnitDb.GROUP_TRIP.type) {
+                Typography.labelSmall
+            } else if (ticket.duration.type == DurationDb.WEEKEND.type) {
+                Typography.displayLarge
+            } else if (ticket.unit.type == UnitDb.MINUTE_OR_TRIP.type) {
+                Typography.labelMedium
+            } else {
+                Typography.labelLarge
+            }
         )
         Text(
-            text = unit,
+            text = ticket.unit.type,
             modifier = Modifier.fillMaxWidth(),
             color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
             style = Typography.bodyMedium,
         )
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Text(
-                text = ticketSubmitText,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .clip(shape = RoundedCornerShape(8.dp))
-                    .background(color = MainColorScheme.onPrimary)
-                    .padding(12.dp)
-                    .clickable {
-                        navigator.navigateToTicket(resId = 0)
-                    },
-                color = MainColorScheme.surfaceTint,
-                textAlign = TextAlign.Center,
-                style = Typography.bodySmall,
-            )
-        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = stringResource(id = R.string.ticket_submit),
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(8.dp))
+                .background(color = MainColorScheme.onPrimary)
+                .padding(12.dp)
+                .clickable {
+                    navigator.navigateToUserTicket(ticketId = 0)
+                },
+            color = MainColorScheme.surfaceTint,
+            textAlign = TextAlign.Center,
+            style = Typography.bodySmall,
+        )
     }
 }
 
 
 @Composable
 fun TicketDataColumn(
+    viewModel: ListPageViewModel,
+    ticket: UserTicket,
     time: String,
     day: String,
     date: String,
-    imgCalendar: Painter,
-    imgPrice: Painter,
-    textFrom: String,
-    textDate: String,
-    textBuyAgain: String,
-    textSeeMore: String,
-    priceFormatted: String,
 ) {
     Column(
         modifier = Modifier
@@ -294,7 +228,7 @@ fun TicketDataColumn(
         Row {
             SpacerImageSize()
             Text(
-                text = textFrom,
+                text = stringResource(id = R.string.ticket_field_from),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -304,8 +238,8 @@ fun TicketDataColumn(
         }
         Row {
             Image(
-                painter = imgCalendar,
-                contentDescription = textDate,
+                painter = painterResource(id = R.drawable.calendar),
+                contentDescription = stringResource(id = R.string.ticket_date),
                 modifier = Modifier
                     .padding(8.dp, 4.dp, 8.dp, 4.dp)
                     .size(16.dp)
@@ -346,8 +280,8 @@ fun TicketDataColumn(
         }
         Row {
             Image(
-                painter = imgPrice,
-                contentDescription = textDate,
+                painter = painterResource(id = R.drawable.price),
+                contentDescription = stringResource(id = R.string.ticket_price),
                 modifier = Modifier
                     .padding(8.dp, 4.dp, 8.dp, 4.dp)
                     .size(16.dp)
@@ -357,7 +291,11 @@ fun TicketDataColumn(
                     .fillMaxSize(),
             )
             Text(
-                text = priceFormatted,
+                text = stringResource(
+                    id = R.string.price_format,
+                    ticket.price.type,
+                    stringResource(id = R.string.currency_pln)
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -368,13 +306,17 @@ fun TicketDataColumn(
         Row {
             SpacerImageSize()
             Text(
-                text = textBuyAgain,
+                text = stringResource(id = R.string.ticket_buy_again),
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(color = MainColorScheme.onTertiary)
                     .padding(8.dp),
+//                    .clickable {
+//                        println("ticket.id = ${ticket.id}")
+//                        viewModel.onTicketPicked(ticket.id)
+//                    },
                 color = MainColorScheme.surfaceTint,
                 textAlign = TextAlign.Center,
                 style = Typography.headlineSmall,
@@ -398,7 +340,7 @@ fun TicketDataColumn(
         Row {
             SpacerImageSize()
             Text(
-                text = textSeeMore,
+                text = stringResource(id = R.string.ticket_see_more),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -409,3 +351,36 @@ fun TicketDataColumn(
         }
     }
 }
+
+//fun manipulateDbButtons(){
+//    Text(
+//        text = "drop user tickets table",
+//        modifier = Modifier
+//            .padding(4.dp)
+//            .fillMaxWidth()
+//            .clip(shape = RoundedCornerShape(8.dp))
+//            .background(color = MainColorScheme.onTertiary)
+//            .padding(8.dp)
+//            .clickable {
+//                viewModel.dropTableUserTickets()
+//            },
+//        color = MainColorScheme.surfaceTint,
+//        textAlign = TextAlign.Center,
+//        style = Typography.headlineSmall,
+//    )
+//    Text(
+//        text = "populate store tickets table",
+//        modifier = Modifier
+//            .padding(4.dp)
+//            .fillMaxWidth()
+//            .clip(shape = RoundedCornerShape(8.dp))
+//            .background(color = MainColorScheme.onTertiary)
+//            .padding(8.dp)
+//            .clickable {
+//                viewModel.populateTableStoreTicket()
+//            },
+//        color = MainColorScheme.surfaceTint,
+//        textAlign = TextAlign.Center,
+//        style = Typography.headlineSmall,
+//    )
+//}

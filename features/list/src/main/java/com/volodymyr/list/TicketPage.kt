@@ -1,4 +1,4 @@
-package com.volodymyr.ticket
+package com.volodymyr.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

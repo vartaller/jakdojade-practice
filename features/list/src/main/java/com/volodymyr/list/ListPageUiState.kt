@@ -19,3 +19,7 @@ enum class TicketsType(val typeId: Int) {
     REDUCED(R.string.screen_store_tickets_reduced),
     REGULAR(R.string.screen_store_tickets_regular),
 }
+
+sealed class ListPageEffect {
+    data class GoToTicketPurchase(val ticketId: Int) : ListPageEffect()
+}

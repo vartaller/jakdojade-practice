@@ -17,7 +17,6 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/list" />
-            <option value="$PROJECT_DIR$/features/purchase" />
             <option value="$PROJECT_DIR$/features/ticket" />
           </set>
         </option>

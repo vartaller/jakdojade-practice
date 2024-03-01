@@ -3,11 +3,12 @@ package com.volodymyr.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.volodymyr.data.Repository
-import com.volodymyr.data.UserTicket
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +19,8 @@ class ListPageViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ListPageUiState())
     val uiState: StateFlow<ListPageUiState> = _uiState.asStateFlow()
 
-//    val allUserTickets: LiveData<List<UserTicket>> = repository.allUserTickets.asLiveData()
-
-//    val userTicketsList: List<UserTicket> = mutableListOf()
+    private val _effect = Channel<ListPageEffect?>()
+    val effect = _effect.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -39,21 +39,18 @@ class ListPageViewModel @Inject constructor(
         }
     }
 
-    fun dropTableUserTickets(){
+    fun dropTableUserTickets() {
         viewModelScope.launch {
             repository.dropTableUsersTicket()
         }
     }
 
-    fun populateTableStoreTicket(){
+    fun populateTableStoreTicket() {
         viewModelScope.launch {
             repository.populateTableStoreTicket()
         }
     }
 
-    fun insertUserTicket(userTicket: UserTicket) = viewModelScope.launch {
-        repository.insertUserTicket(userTicket)
-    }
 
     fun updateTabState(
         newTicketsTab: TicketsTab = _uiState.value.ticketsTab,
@@ -72,5 +69,22 @@ class ListPageViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             ticketsType = newTicketsType,
         )
+    }
+
+    fun onTicketPicked(ticketId: Int) {
+        setEffect(effect = ListPageEffect.GoToTicketPurchase(ticketId))
+    }
+
+    private fun setEffect(effect: ListPageEffect) {
+        viewModelScope.launch {
+            _effect.send(null)
+            _effect.send(effect)
+        }
+    }
+
+    fun clearEffect() {
+        viewModelScope.launch {
+            _effect.send(null)
+        }
     }
 }

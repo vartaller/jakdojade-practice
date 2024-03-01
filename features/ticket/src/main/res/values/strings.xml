@@ -1,6 +1,6 @@
 <resources>
     <!-- General Strings -->
-<!--    <string name="app_name">My Application</string>-->
+    <!--    <string name="app_name">My Application</string>-->
 
     <!-- Ticket data -->
     <string name="ticket_domain">%1$s %2$s, Strefa: %3$s</string>

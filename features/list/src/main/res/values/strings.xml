@@ -39,6 +39,7 @@
     <string name="ticket_buy_again">Купи заново</string>
     <string name="ticket_see_more">Покажи больше</string>
     <string name="ticket_date">Дата</string>
+    <string name="ticket_price">Price</string>
     <!--    <string name="ticket_field_phone">Numer telefonu</string>-->
     <!--    <string name="ticket_field_vehicle">Numer boczny pojazdu</string>-->
     <!--    <string name="ticket_field_price">Cena</string>-->
@@ -53,9 +54,31 @@
     <string name="price_regular_minutes_middle">6,00</string>
     <string name="price_regular_minutes_long">8,00</string>
 
+    <!-- Screen: purchase ticket -->
+    <string name="screen_ticket_purchase_some_text">"Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text"</string>
+
+    <!-- General Strings -->
+    <!--    <string name="app_name">My Application</string>-->
+
+    <!-- Ticket data -->
+    <string name="ticket_domain">%1$s %2$s, Strefa: %3$s</string>
+    <string name="ticket_status_active">Активен</string>
+    <string name="ticket_status_inactive">Недействителен</string>
+
+    <!-- Ticket fields text -->
+    <string name="ticket_field_phone">Numer telefonu</string>
+    <string name="ticket_field_vehicle">Numer boczny pojazdu</string>
+    <string name="ticket_field_price">Cena</string>
+    <string name="ticket_field_provider">Wystawca biletu</string>
+    <string name="ticket_field_code">Kod biletu</string>
+
+    <!-- Screen: ticket type -->
+    <string name="screen_store_ticket_reduced">Льготный</string>
+    <string name="screen_store_ticket_regular">Обычный</string>
+
     <!-- Screen: purchased ticket -->
-    <!--    <string name="screen_ticket_title">Ticket control</string>-->
-    <!--    <string name="screen_ticket_qr_scale">Нажми, чтобы увеличить</string>-->
-    <!--    <string name="screen_ticket_image_qr">QR code</string>-->
-    <!--    <string name="screen_ticket_image_arrow_back">Вернуться</string>-->
+    <string name="screen_ticket_title">Ticket control</string>
+    <string name="screen_ticket_qr_scale">Нажми, чтобы увеличить</string>
+    <string name="screen_ticket_image_qr">QR code</string>
+    <string name="screen_ticket_image_arrow_back">Вернуться</string>
 </resources>

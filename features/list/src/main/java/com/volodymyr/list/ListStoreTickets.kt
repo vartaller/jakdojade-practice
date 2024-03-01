@@ -48,6 +48,7 @@ fun ListStoreTickets(
     }
     TicketsTermGroup.values().forEach { term ->
         TicketGroup(
+            viewModel = viewModel,
             state = state,
             title = stringResource(id = term.termId),
             selectedTicketType = selectedTicketsType
@@ -104,6 +105,7 @@ fun TicketTypeSelector(selectedTicketsType: Int, onTabSelected: (TicketsType) ->
 
 @Composable
 fun TicketGroup(
+    viewModel: ListPageViewModel,
     state: ListPageUiState,
     title: String,
     selectedTicketType: Int,
@@ -144,7 +146,9 @@ fun TicketGroup(
         Spacer(modifier = Modifier.width(8.dp))
         storeTicketsGroup.forEach { ticket ->
             StoreTicketCard(
+                viewModel = viewModel,
                 type = ticketTypeSingle,
+                ticketId = ticket.id,
                 provider = ticket.provider.type,
                 scope = ticket.scope.type,
                 time = ticket.duration.type,
@@ -152,7 +156,6 @@ fun TicketGroup(
                 price = ticket.price.type,
                 currency = R.string.currency_pln,
                 scopeFormat = R.string.ticket_scope_format,
-                group = title
             )
         }
     }
@@ -161,6 +164,8 @@ fun TicketGroup(
 
 @Composable
 fun StoreTicketCard(
+    viewModel: ListPageViewModel,
+    ticketId: Int,
     type: Int,
     provider: String,
     scope: String,
@@ -169,7 +174,6 @@ fun StoreTicketCard(
     price: String,
     currency: Int,
     scopeFormat: Int,
-    group: String,
 ) {
     Column(
         modifier = Modifier
@@ -179,7 +183,10 @@ fun StoreTicketCard(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(8.dp),
             )
-            .background(color = MainColorScheme.onPrimary),
+            .background(color = MainColorScheme.onPrimary)
+            .clickable {
+                viewModel.onTicketPicked(ticketId)
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -233,17 +240,11 @@ fun StoreTicketCard(
                 text = time,
                 color = MainColorScheme.onPrimary,
                 textAlign = TextAlign.Center,
-                style = if (
-                    unit == UnitDb.GROUP_TRIP.type
-                ) {
+                style = if (unit == UnitDb.GROUP_TRIP.type) {
                     Typography.labelSmall
-                } else if (
-                    time == DurationDb.WEEKEND.type
-                ) {
+                } else if (time == DurationDb.WEEKEND.type) {
                     Typography.displayLarge
-                } else if (
-                    unit == UnitDb.MINUTE_OR_TRIP.type
-                ){
+                } else if (unit == UnitDb.MINUTE_OR_TRIP.type) {
                     Typography.labelMedium
                 } else {
                     Typography.labelLarge

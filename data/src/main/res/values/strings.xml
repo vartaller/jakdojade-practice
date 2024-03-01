@@ -3,6 +3,9 @@
     <string name="price_format">%1$s %2$s</string>
     <string name="currency_pln">PLN</string>
     <string name="balance_format">%.2f</string>
+    <string name="close">Close</string>
+    <string name="seconds_unit">%1$s s</string>
+    <string name="user_balance_hardcoded">4.80 PLN</string>
 
     <!-- Screen title -->
     <string name="screen_title_tickets">Билеты</string>
@@ -60,8 +63,8 @@
     <string name="price_regular_minutes_long">8,00</string>
 
     <!-- Screen: purchased ticket -->
-    <!--    <string name="screen_ticket_title">Ticket control</string>-->
-    <!--    <string name="screen_ticket_qr_scale">Нажми, чтобы увеличить</string>-->
-    <!--    <string name="screen_ticket_image_qr">QR code</string>-->
-    <!--    <string name="screen_ticket_image_arrow_back">Вернуться</string>-->
+        <string name="screen_ticket_purchase_buy_full">Купить и активировать %1$s шт билетов - %2$s %3$s"</string>
+        <string name="screen_ticket_purchase_buy_short">Купи и пробей билет</string>
+        <string name="screen_ticket_purchase_method">Способ оплаты:</string>
+        <string name="screen_ticket_purchase_wallet">Wallet</string>
 </resources>

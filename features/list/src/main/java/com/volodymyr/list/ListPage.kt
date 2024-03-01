@@ -38,11 +38,16 @@ import com.volodymyr.ui.theme.Typography
 @Destination(start = true)
 @Composable
 fun ListPage(
-    id: Int = 0,
     navigator: NavigationProvider,
     viewModel: ListPageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val effect by viewModel.effect.collectAsState(initial = null)
+    ListPageEffect(
+        effect = effect,
+        navigator = navigator,
+        viewModel = viewModel
+    )
 
     val selectedTicketsTab = state.ticketsTab.tabId
     val selectedTicketsType = state.ticketsType.typeId
@@ -70,12 +75,33 @@ fun ListPage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (selectedTicketsTab == TicketsTab.STORE.tabId) {
-                ListStoreTickets(state = state, selectedTicketsType = selectedTicketsType)
+                ListStoreTickets(
+                    state = state,
+                    selectedTicketsType = selectedTicketsType
+                )
             } else {
                 ListUsersTickets(state = state, navigator = navigator)
             }
         }
     }
+}
+
+@Composable
+fun ListPageEffect(
+    effect: ListPageEffect?,
+    navigator: NavigationProvider,
+    viewModel: ListPageViewModel
+) {
+    when (effect) {
+        is ListPageEffect.GoToTicketPurchase -> println("effect.ticketId = ${effect.ticketId}")
+        null -> println("effect.ticketId = null")
+    }
+
+    when (effect) {
+        is ListPageEffect.GoToTicketPurchase -> navigator.navigateToStoreTicket(effect.ticketId)
+        null -> Unit
+    }
+    viewModel.clearEffect()
 }
 
 @Composable

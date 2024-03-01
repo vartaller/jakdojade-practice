@@ -13,9 +13,13 @@ interface Dao {
 
     @Query("SELECT * FROM store_ticket")
     fun getStoreTickets(): Flow<List<StoreTicket>>
+    @Query("SELECT * FROM store_ticket WHERE id = :ticketId")
+    fun getStoreTicket(ticketId: Int?): StoreTicket
 
     @Insert()
     suspend fun insertUserTicket(ticket: UserTicket)
+    @Insert()
+    suspend fun insertUserTickets(tickets: List<UserTicket>)
     @Insert()
     suspend fun insertStoreTicket(ticket: StoreTicket)
 

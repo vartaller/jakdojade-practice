@@ -40,23 +40,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-//    buildscript {
-//        ext.kotlin_version = '1.5.31'
-//    }
-//    ext {
-//        activityVersion = '1.4.0'
-//        appCompatVersion = '1.4.0'
-//        constraintLayoutVersion = '2.1.2'
-//        coreTestingVersion = '2.1.0'
-//        coroutines = '1.5.2'
-//        lifecycleVersion = '2.4.0'
-//        materialVersion = '1.4.0'
-//        roomVersion = '2.3.0'
-//        // testing
-//        junitVersion = '4.13.2'
-//        espressoVersion = '3.4.0'
-//        androidxJunitVersion = '1.1.3'
-//    }
 }
 
 ksp {
@@ -82,9 +65,11 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-android:1.6.0")
     implementation("androidx.compose.material3:material3:1.2.0-alpha02")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
     implementation(project(":common:provider"))
-//    implementation(project(":features:ticket"))
     implementation(project(":data"))
+    implementation(project(mapOf("path" to ":common:ui-theme")))
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -96,6 +81,4 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
-
-    implementation(project(mapOf("path" to ":common:ui-theme")))
 }

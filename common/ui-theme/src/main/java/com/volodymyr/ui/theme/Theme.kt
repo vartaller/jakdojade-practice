@@ -19,6 +19,7 @@ val MainColorScheme = lightColorScheme(
     onTertiary = grayMid,
     tertiaryContainer = grayTransparent,
     surface = grayDark,
+    onSurface = grayDarkest,
     outline = yellow,
     error = red,
     surfaceTint = black,
