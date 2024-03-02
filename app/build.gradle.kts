@@ -92,7 +92,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation(project(mapOf("path" to ":features:ticket")))
     implementation(project(mapOf("path" to ":features:list")))
     implementation(project(mapOf("path" to ":common:ui-theme")))
 

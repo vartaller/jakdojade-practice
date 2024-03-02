@@ -93,11 +93,6 @@ fun ListPageEffect(
     viewModel: ListPageViewModel
 ) {
     when (effect) {
-        is ListPageEffect.GoToTicketPurchase -> println("effect.ticketId = ${effect.ticketId}")
-        null -> println("effect.ticketId = null")
-    }
-
-    when (effect) {
         is ListPageEffect.GoToTicketPurchase -> navigator.navigateToStoreTicket(effect.ticketId)
         null -> Unit
     }

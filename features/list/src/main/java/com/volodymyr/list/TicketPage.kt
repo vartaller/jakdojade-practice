@@ -36,11 +36,12 @@ import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
 
 
-@Destination(start = true)
+@Destination(start = false)
 @Composable
 fun TicketPage(
     navigator: NavigationProvider,
     viewModel: TicketPageViewModel = hiltViewModel(),
+    ticketId: Int
 ) {
     val state by viewModel.uiState.collectAsState()
 
