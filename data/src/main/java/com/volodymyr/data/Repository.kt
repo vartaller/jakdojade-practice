@@ -14,6 +14,10 @@ class RepositoryImpl(private val dao: Dao): Repository {
     override suspend fun getStoreTicket(ticketId: Int?): StoreTicket {
         return dao.getStoreTicket(ticketId = ticketId)
     }
+    @WorkerThread
+    override suspend fun getUserTicket(ticketId: Int?): UserTicket {
+        return dao.getUserTicket(ticketId = ticketId)
+    }
 //    @WorkerThread
 //    override suspend fun insertUserTicket(ticket: UserTicket) {
 //        dao.insertUserTicket(ticket)
@@ -41,6 +45,7 @@ class RepositoryImpl(private val dao: Dao): Repository {
 
 interface Repository {
     suspend fun getStoreTicket(ticketId: Int?):StoreTicket
+    suspend fun getUserTicket(ticketId: Int?):UserTicket
 //    suspend fun insertUserTicket(ticket: UserTicket)
     suspend fun insertUserTickets(ticketsList: List<UserTicket>)
     suspend fun dropTableUsersTicket()

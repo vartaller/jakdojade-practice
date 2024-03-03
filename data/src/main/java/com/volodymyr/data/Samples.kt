@@ -5,6 +5,7 @@ import java.util.Date
 fun sampleUserTicketsData(): List<UserTicket> {
     val sample1 = UserTicket(
         id = 1,
+        storeTicketId = 1,
         type = TicketTypeDb.REDUCED,
         provider = ProviderDb.ZTP_KRK,
         scope = ScopeDb.CITY,
@@ -15,6 +16,7 @@ fun sampleUserTicketsData(): List<UserTicket> {
     )
     val sample2 = UserTicket(
         id = 2,
+        storeTicketId = 2,
         type = TicketTypeDb.REGULAR,
         provider = ProviderDb.ZTP_KRK,
         scope = ScopeDb.CITY,

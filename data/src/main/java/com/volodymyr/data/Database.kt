@@ -17,9 +17,9 @@ import java.util.Date
 @Database(
     entities = [UserTicket::class, StoreTicket::class],
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 2, to = 4)
     ],
-    version = 2, exportSchema = true
+    version = 4, exportSchema = true
 )
 public abstract class DatabaseApp : RoomDatabase() {
 

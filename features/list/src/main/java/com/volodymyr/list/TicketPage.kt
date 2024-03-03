@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.volodymyr.data.UserTicket
 import com.volodymyr.provider.NavigationProvider
 import com.volodymyr.ui.theme.MainColorScheme
 import com.volodymyr.ui.theme.Typography
@@ -67,13 +68,11 @@ fun TicketPage(
                     navigator.navigateUp()
                 },
             )
-            TicketType(
-                type = stringResource(id = state.ticketType.typeId),
-                time = state.ticketTime,
-                unit = state.ticketTimeUnit,
-                scope = state.ticketScope,
-                format = state.textScopeFormat.textId
-            )
+            state.ticket?.let {
+                TicketType(
+                    ticket = it
+                )
+            }
         }
         LazyColumn(
             modifier = Modifier
@@ -84,7 +83,7 @@ fun TicketPage(
             item { Spacer(modifier = Modifier.height(12.dp)) }
             item {
                 QrCode(
-                    isActive = false,
+                    isActive = state.isActive,
                     textTicketActive = stringResource(id = R.string.ticket_status_active),
                     textTicketInactive = stringResource(id = R.string.ticket_status_inactive),
                     textQrDescription = stringResource(id = R.string.screen_ticket_image_qr),
@@ -92,8 +91,14 @@ fun TicketPage(
                 )
             }
             item { Spacer(modifier = Modifier.height(12.dp)) }
-            items(state.ticketValues.size) { index ->
-                InfoField(model = state.ticketValues[index])
+            items(state.ticketDataFieldNames.size) { fieldId ->
+                state.ticket?.let {
+                    InfoField(
+                        state = state,
+                        ticket = it,
+                        fieldName = state.ticketDataFieldNames[fieldId]
+                    )
+                }
             }
         }
     }
@@ -135,13 +140,13 @@ fun Title(
 
 @Composable
 fun TicketType(
-    type: String, time: String, unit: String, scope: String, format: Int
+    ticket: UserTicket
 ) {
     Column(
         modifier = Modifier.padding(0.dp, 12.dp, 12.dp, 12.dp),
     ) {
         Text(
-            text = type,
+            text = ticket.type.type,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(4.dp))
                 .background(color = MainColorScheme.onTertiary)
@@ -150,7 +155,12 @@ fun TicketType(
             style = Typography.displaySmall,
         )
         Text(
-            text = stringResource(id = format, time, unit, scope),
+            text = stringResource(
+                id = R.string.ticket_domain,
+                ticket.duration.type,
+                ticket.unit.type,
+                ticket.scope.type
+            ),
             modifier = Modifier.padding(top = 12.dp),
             color = MainColorScheme.onPrimary,
             style = Typography.displayMedium,
@@ -178,7 +188,7 @@ fun QrCode(
             .clip(shape = RoundedCornerShape(16.dp))
             .background(
                 color = if (isActive) {
-                    MainColorScheme.tertiary
+                    MainColorScheme.secondary
                 } else {
                     MainColorScheme.error
                 }
@@ -218,7 +228,23 @@ fun QrCode(
 }
 
 @Composable
-fun InfoField(model: TicketDataModel) {
+fun InfoField(
+    state: TicketPageUiState,
+    ticket: UserTicket,
+    fieldName: TicketDataFieldNames,
+) {
+    val fieldValue: String = when (fieldName.nameId) {
+        R.string.ticket_field_from -> state.dateFrom
+        R.string.ticket_field_to -> state.dateTo
+        R.string.ticket_field_phone -> "49 765765765"
+        R.string.ticket_field_vehicle -> "HL417"
+        R.string.ticket_field_price -> ticket.price.type
+        R.string.ticket_field_provider -> ticket.provider.type
+        R.string.ticket_field_code -> "33A52GQ9"
+        else -> {
+            ""
+        }
+    }
     Column(
         modifier = Modifier
             .padding(bottom = 12.dp)
@@ -230,12 +256,12 @@ fun InfoField(model: TicketDataModel) {
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(id = model.title.nameId),
+            text = stringResource(id = fieldName.nameId),
             color = MainColorScheme.surface,
             style = Typography.bodySmall,
         )
         Text(
-            text = model.value,
+            text = fieldValue,
             modifier = Modifier,
             color = MainColorScheme.surfaceTint,
             style = Typography.bodyLarge,

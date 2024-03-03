@@ -197,7 +197,7 @@ fun TicketShapeColumn(
                 .background(color = MainColorScheme.onPrimary)
                 .padding(12.dp)
                 .clickable {
-                    navigator.navigateToUserTicket(ticketId = 0)
+                    navigator.navigateToUserTicket(ticketId = ticket.id)
                 },
             color = MainColorScheme.surfaceTint,
             textAlign = TextAlign.Center,
@@ -312,11 +312,13 @@ fun TicketDataColumn(
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(8.dp))
                     .background(color = MainColorScheme.onTertiary)
-                    .padding(8.dp),
-//                    .clickable {
-//                        println("ticket.id = ${ticket.id}")
-//                        viewModel.onTicketPicked(ticket.id)
-//                    },
+                    .padding(8.dp)
+                    .clickable {
+                        println("ticket.storeTicketId = ${ticket.storeTicketId}")
+                        ticket.storeTicketId?.let {
+                            viewModel.onTicketPicked(ticket.storeTicketId!!)
+                        }
+                    },
                 color = MainColorScheme.surfaceTint,
                 textAlign = TextAlign.Center,
                 style = Typography.headlineSmall,

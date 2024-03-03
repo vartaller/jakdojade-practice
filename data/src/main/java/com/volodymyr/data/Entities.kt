@@ -1,6 +1,7 @@
 package com.volodymyr.data
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.util.Date
 @Entity(tableName = "store_ticket")
@@ -14,10 +15,19 @@ data class StoreTicket(
     val price: PriceDb,
     val termGroup: TicketsTermGroup,
 )
-
-@Entity(tableName = "users_ticket")
+@Entity(tableName = "users_ticket",
+    foreignKeys = [
+        ForeignKey(
+            entity = StoreTicket::class,
+            parentColumns = ["id"],
+            childColumns = ["storeTicketId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class UserTicket(
     @PrimaryKey(autoGenerate = true) val id: Int,
+    val storeTicketId: Int?,
     val type: TicketTypeDb,
     val provider: ProviderDb,
     val scope: ScopeDb,

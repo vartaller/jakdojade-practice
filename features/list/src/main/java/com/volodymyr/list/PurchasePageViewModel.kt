@@ -76,6 +76,7 @@ class PurchasePageViewModel @Inject constructor(
         repeat(amount) {
             val userTicket = UserTicket(
                 id = 0,
+                storeTicketId = storeTicket.id,
                 type = storeTicket.type,
                 provider = storeTicket.provider,
                 scope = storeTicket.scope,
